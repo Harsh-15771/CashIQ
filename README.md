@@ -30,6 +30,7 @@
 - [System Architecture](#system-architecture)
 - [Decision Pipeline](#decision-pipeline)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Mathematical Formulations](#mathematical-formulations)
 - [Technology Stack](#technology-stack)
 - [Engineering Decisions](#engineering-decisions)
@@ -238,6 +239,50 @@ sequenceDiagram
 - **Section 194J TDS** — 10% professional services withholding
 - **GST GSTR-2B Reconciliation** — Cross-references filed returns against invoice amounts, flags variances, and triggers dispute transitions
 - **Razorpay Payment Gateway Integration** — Native `razorpay` SDK client for payment verification and UTR cross-referencing
+
+---
+
+## Screenshots
+
+<table width="100%">
+  <tr>
+    <th width="50%">Decision Lab (Hero Demo & EV Inspector)</th>
+    <th width="50%">Control Center (Guardrails & Human Action Queue)</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/01_decision_lab.png" width="100%" />
+      <br><i>(Two-panel evaluation with TreeSHAP attributions and integer paise EV candidates)</i>
+    </td>
+    <td align="center">
+      <img src="./screenshots/02_control_center.png" width="100%" />
+      <br><i>(High-value invoice sign-off queue with status-colored left borders and audit log)</i>
+    </td>
+  </tr>
+  <tr>
+    <th>Debtor Digital Twins</th>
+    <th>A/B Evidence Lab (50/50 Randomized Trial)</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/03_debtor_twins.png" width="100%" />
+      <br><i>(Debtor portfolio with Laplace promise credibility gauges and decision diffs)</i>
+    </td>
+    <td align="center">
+      <img src="./screenshots/04_ab_evidence.png" width="100%" />
+      <br><i>(SHA-256 randomized trial showing +₹6.58L net recovery uplift vs. control)</i>
+    </td>
+  </tr>
+  <tr>
+    <th colspan="2">Probabilistic Cash Inflow Forecast & Receivables Ledger</th>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="./screenshots/05_invoices_ledger.png" width="100%" />
+      <br><i>(30-day cash forecast curve with status-coded ledger decomposition)</i>
+    </td>
+  </tr>
+</table>
 
 ---
 
