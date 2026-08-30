@@ -1,7 +1,7 @@
 # CashIQ: Judge Defense & Technical FAQ
 
 > **Core Idea:** In enterprise B2B finance, **Outstanding $\neq$ Collectible Debt**.  
-> CashIQ asks: *Is this actually money we need to chase, or is there a valid business reason (TDS, GST, bank delay)?*  
+> CashIQ asks: *Is this actually money that needs to be chased, or is there a valid business reason (TDS, GST, bank delay)?*  
 > **Rule:** AI extracts and reasons; deterministic Python code handles the math, tax rules, and execution.
 
 ---
@@ -9,7 +9,7 @@
 ### Q1: How do you prevent LLM hallucinations from making bad financial commitments or offering discounts?
 
 **Answer:**  
-We completely separated unstructured text parsing from financial execution. We use Gemini 2.0 strictly as a semantic parser with strict JSON schema outputs. It extracts key details (promised payment date, UTR reference, TDS rate, dispute category) into a strongly-typed Pydantic schema.
+I completely separated unstructured text parsing from financial execution. Gemini 2.0 is used strictly as a semantic parser with strict JSON schema outputs. It extracts key details (promised payment date, UTR reference, TDS rate, dispute category) into a strongly-typed Pydantic schema.
 
 The actual decision-making and money math are handled by deterministic Python backend rules:
 1. **Price-Lock Rule:** Outbound payment links are locked to the gross invoice amount minus verified statutory TDS (2% for Section 194C or 10% for Section 194J). The LLM has zero ability to change amounts or offer discounts.
@@ -21,7 +21,7 @@ The actual decision-making and money math are handled by deterministic Python ba
 ### Q2: Is your debtor population real or synthetic, and how do you prevent evaluation leakage?
 
 **Answer:**  
-For our hackathon demo environment, we seeded a portfolio of 25 enterprise accounts and payment timelines deterministically using fixed seeds (`seed=42`). 
+For the hackathon demo environment, I seeded a portfolio of 25 enterprise accounts and payment timelines deterministically using fixed seeds (`seed=42`). 
 
 To make sure there's zero data leakage:
 * The seeded population covers real Indian B2B debtor profiles: high-trust logistics firms, chronic delayers, debtors facing GST portal issues, and new accounts.
@@ -33,7 +33,7 @@ To make sure there's zero data leakage:
 ### Q3: What are the exact metrics of your ML model vs standard baselines?
 
 **Answer:**  
-We evaluated our trained **LightGBM PTP Classifier** ($N=2,000$ synthetic training records, $N=400$ stratified test split) against standard baselines on the same test set:
+I evaluated the trained **LightGBM PTP Classifier** ($N=2,000$ synthetic training records, $N=400$ stratified test split) against standard baselines on the same test set:
 
 | Model / Approach | ROC-AUC | Accuracy | F1 Score | Brier Score (Calibration) | Notes |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -41,8 +41,8 @@ We evaluated our trained **LightGBM PTP Classifier** ($N=2,000$ synthetic traini
 | **Logistic Regression** | **0.8317** | 74.00% | **0.7174** | 0.1798 | Strong linear baseline. |
 | **LightGBM Classifier (CashIQ)** | 0.8206 | **74.50%** | 0.7119 | **0.1725** | Captures non-linear interactions + allows TreeSHAP explanations. |
 
-**Our Takeaway:**  
-Honestly, LightGBM and Logistic Regression performed almost identically on tabular receivables data ($\text{AUC } 0.8206 \text{ vs } 0.8317$). We chose LightGBM not to boast about an inflated metric, but because it enables **TreeSHAP local feature attributions**, allowing us to show finance operators exactly why a decision was made (e.g. $+28.4\%$ for a valid UTR, $-12.1\%$ for contact fatigue).
+**My Takeaway:**  
+Honestly, LightGBM and Logistic Regression performed almost identically on tabular receivables data ($\text{AUC } 0.8206 \text{ vs } 0.8317$). I chose LightGBM not to boast about an inflated metric, but because it enables **TreeSHAP local feature attributions**, allowing the UI to show finance operators exactly why a decision was made (e.g. $+28.4\%$ for a valid UTR, $-12.1\%$ for contact fatigue).
 
 ---
 
@@ -63,7 +63,7 @@ A simple division ($\frac{\mathrm{Kept}}{\mathrm{Total}}$) breaks on brand new d
 **Answer:**  
 Repeated dunning or immediate human escalation might yield a slightly higher short-term mathematical probability of recovery, but it annoys clients and damages long-term relationships.
 
-We model this tradeoff explicitly in integer paise:
+I model this tradeoff explicitly in integer paise:
 
 $$\mathrm{EV}(a) = \left\lfloor P(a) \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{paise}} - \mathrm{FatiguePenalty}_{\mathrm{paise}} \right\rfloor$$
 
@@ -71,7 +71,7 @@ Where:
 $$\mathrm{FatiguePenalty}_{\mathrm{paise}} = \left\lfloor \mathrm{FrictionRate}(a) \times (\mathrm{Contacts} + 1)^{1.4} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 
 **Policy Veto Principle:**  
-For a reliable debtor (e.g. Apex Logistics, Credibility: 93/100), `ESCALATE_HUMAN` might have the highest raw EV (₹42,326.59), but our backend policy engine blocks it with a **`BLOCKED (Policy Veto)`** because the debtor is trustworthy and actively communicating. Instead, `WAIT` is selected (EV: ₹41,537.79).
+For a reliable debtor (e.g. Apex Logistics, Credibility: 93/100), `ESCALATE_HUMAN` might have the highest raw EV (₹42,326.59), but the backend policy engine blocks it with a **`BLOCKED (Policy Veto)`** because the debtor is trustworthy and actively communicating. Instead, `WAIT` is selected (EV: ₹41,537.79).
 
 **EV proposes, but business policy has final veto power.** An AI system shouldn't harass a good client just because escalation has a marginally higher raw number.
 
@@ -99,7 +99,7 @@ When triggered, the system pauses automated action, marks the case as **`NEEDS_R
 
 **Answer:**  
 LLM outputs can fluctuate slightly across calls. To make CashIQ audit-ready:
-1. When a decision is evaluated, we save the extracted JSON and a hash of the ledger state into a decision snapshot.
+1. When a decision is evaluated, CashIQ saves the extracted JSON and a hash of the ledger state into a decision snapshot.
 2. When someone clicks **Replay & Verify**, the system runs the cached JSON against the deterministic Python layers (LightGBM, EV math, and Policy Gate) without making another LLM API call.
 3. This gives **100% identical results** every single time, with zero API latency and zero extra cost.
 
@@ -108,7 +108,7 @@ LLM outputs can fluctuate slightly across calls. To make CashIQ audit-ready:
 ### Q9: Where does the "actual receipt" amount for reconciliation come from?
 
 **Answer:**  
-In our demo ledger, receipt amounts are simulated in the seeded data to demonstrate Section 194C 2% TDS deductions and GSTR-2B mismatch detection.
+In the demo ledger, receipt amounts are simulated in the seeded data to demonstrate Section 194C 2% TDS deductions and GSTR-2B mismatch detection.
 
 In a live production setup, this data flows in from:
 1. **Razorpay Webhooks:** Listening to `payment.captured` and `settlement.processed` events containing net amounts and bank UTRs.
@@ -131,7 +131,7 @@ In a live production setup, this data flows in from:
 ### Q11: How did your prompt injection defense evolve during testing?
 
 **Answer:**  
-We didn't get our defenses right on the first try. We tested our pipeline against 6 attack vectors (system prompt overrides, fake UTRs, invalid dates like Feb 30, balance overwrite tricks):
+I didn't get the defenses right on the first try. I tested the pipeline against 6 attack vectors (system prompt overrides, fake UTRs, invalid dates like Feb 30, balance overwrite tricks):
 
 1. **Iteration 1 (Basic Prompting):** Blocked only **1 / 6 attacks (16.7%)**. Prompt injections easily tricked the LLM into resetting invoice balances to 0.
 2. **Iteration 2 (Strict Pydantic Validation):** Blocked **3 / 6 attacks (50.0%)**. Structural types prevented balance overwrites, but semantic date tricks (e.g. "We will pay on Feb 30") still slipped through.

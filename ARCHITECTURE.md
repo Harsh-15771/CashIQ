@@ -1,7 +1,7 @@
 # CashIQ Architecture & System Design
 
 > **Autonomous B2B Receivables Decision Intelligence**  
-> Built for the Razorpay Hackathon by Harsh  
+> Built for the Razorpay Hackathon by Harsh (Solo Submission)  
 > Full codebase: Python (FastAPI + LightGBM + Pydantic) + React (Vite + Tailwind)
 
 ---
@@ -38,7 +38,7 @@
 
 ## 1. Problem Statement & Motivation
 
-When we looked into enterprise B2B payments in India, we noticed a huge pain point: companies often have crores in overdue invoices, but **most overdue payments aren't malicious defaults**. 
+When I researched enterprise B2B payments in India, I noticed a huge pain point: companies often have crores in overdue invoices, but **most overdue payments aren't malicious defaults**. 
 
 In reality, payments get delayed because of common operational reasons:
 1. **Tax Withholdings (TDS):** A buyer pays ₹98,000 on a ₹1,00,000 invoice because they legally deducted 2% TDS under Section 194C. Traditional dunning bots treat the missing ₹2,000 as delinquent debt and start spamming the client.
@@ -46,13 +46,13 @@ In reality, payments get delayed because of common operational reasons:
 3. **Unmatched Bank Transfers:** The debtor already sent the money via NEFT and emailed a UTR reference number, but it sits unread in an accounts inbox while automated reminders keep going out.
 4. **Spam & Contact Fatigue:** Sending a payment reminder every 3–4 days irritates clients and burns enterprise goodwill.
 
-We built **CashIQ** to fix this. Instead of blindly blasting payment reminders on a timer, CashIQ acts as a decision engine: it reads incoming debtor messages (emails/WhatsApp/ERP notes), checks debtor credibility, calculates the exact Expected Value of every possible response in integer paise, and applies safety guardrails before taking action.
+I built **CashIQ** to solve this. Instead of blindly blasting payment reminders on a timer, CashIQ acts as an intelligent decision engine: it reads incoming debtor messages (emails/WhatsApp/ERP notes), checks debtor credibility, calculates the exact Expected Value of every possible response in integer paise, and applies safety guardrails before taking action.
 
 ---
 
 ## 2. Core Concept: Outstanding vs Collectible Debt
 
-Most billing tools treat all overdue invoices as one big bucket of "debt to collect." We decompose the total outstanding ledger into 6 distinct categories:
+Most billing tools treat all overdue invoices as one big bucket of "debt to collect." I decompose the total outstanding ledger into 6 distinct categories:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -77,9 +77,9 @@ By categorizing receivables into these buckets, the system knows when to send a 
 
 ## 3. System Architecture
 
-We followed a simple architectural rule: **LLMs are great at reading messy human text, but they should never make financial decisions or do math.**
+I followed a simple architectural rule: **LLMs are great at reading messy human text, but they should never make financial decisions or do math.**
 
-We separated the pipeline into clear stages:
+I separated the pipeline into clear stages:
 1. **Gemini 2.0** extracts unstructured text into a strict Pydantic schema (finding promise dates, UTR numbers, tax codes).
 2. **Deterministic Python backend** computes the credibility score, runs the LightGBM classifier, calculates Expected Value in integer paise, and enforces safety rules.
 
@@ -156,7 +156,7 @@ Where:
 
 ### 4.2 Debtor Promise Credibility Score ($C_{\mathrm{ptp}} \in [0, 100]$)
 
-We calculate a debtor's trustworthiness score using four weighted components:
+I calculate a debtor's trustworthiness score using four weighted components:
 
 $$C_{\mathrm{ptp}} = \mathrm{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
 
@@ -167,23 +167,23 @@ If a brand new debtor pays their very first invoice ($1/1$), a basic division gi
 
 ### 4.3 Integer Paise Expected Value ($\mathrm{EV}$) Engine
 
-In financial software, standard floating-point arithmetic (like `0.1 + 0.2 = 0.30000000000000004`) causes rounding errors. We converted all monetary amounts to **integer paise** ($\mathrm{INR} \times 100$) before running calculations:
+In financial software, standard floating-point arithmetic (like `0.1 + 0.2 = 0.30000000000000004`) causes rounding errors. I converted all monetary amounts to **integer paise** ($\mathrm{INR} \times 100$) before running calculations:
 
 $$\mathrm{EV}(a) = \left\lfloor P_{\mathrm{rec}}(a) \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{paise}}(a) - \mathrm{Fatigue}_{\mathrm{paise}}(a) \right\rfloor$$
 
 #### Action Candidates Evaluated:
-1. **`WAIT` (Snooze):** If the debtor is reliable and made a valid promise, we hold reminders:
+1. **`WAIT` (Snooze):** If the debtor is reliable and made a valid promise, reminders are held:
    $$\mathrm{EV}(\mathrm{WAIT}) = \left\lfloor P_{\mathrm{credibility}} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 2. **`NUDGE_EMAIL` / `NUDGE_WHATSAPP`:** Active reminder message:
    $$\mathrm{EV}(\mathrm{NUDGE}) = \left\lfloor P_{\mathrm{rec}} \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{channel}} - \mathrm{Fatigue}_{\mathrm{paise}} \right\rfloor$$
 3. **`ESCALATE_HUMAN`:** High-friction manual intervention by an account manager or legal team.
-4. **`NO_ACTION`:** Defined strictly as **0 paise**. We never count natural/organic debtor payments as value created by our AI.
+4. **`NO_ACTION`:** Defined strictly as **0 paise**. Natural/organic debtor payments are never counted as value created by the AI.
 
 ---
 
 ### 4.4 Superlinear Customer Fatigue Penalty
 
-Spamming debtors backfires. We modeled this with a superlinear penalty function ($(\mathrm{Contacts} + 1)^{1.4}$):
+Spamming debtors backfires. I modeled this with a superlinear penalty function ($(\mathrm{Contacts} + 1)^{1.4}$):
 
 $$\mathrm{Fatigue}_{\mathrm{paise}}(a) = \left\lfloor \mathrm{FrictionRate}(a) \times (\mathrm{ContactCount} + 1)^{1.4} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 
@@ -198,22 +198,22 @@ $$\mathrm{Fatigue}_{\mathrm{paise}}(a) = \left\lfloor \mathrm{FrictionRate}(a) \
 ### 5.1 Section 194C / 194J TDS Withholding
 Under Indian tax rules, corporate clients must deduct **2% TDS** (or 1% for individuals) under Section 194C, or **10%** under Section 194J for professional services.
 * **The Common Bug:** A debtor pays ₹98,000 on a ₹1,00,000 invoice. Standard bots treat the ₹2,000 as unpaid debt.
-* **Our Solution:** CashIQ validates the 2% / 10% math against the gross invoice. If the difference matches TDS, it marks the ₹98,000 as paid and reconciles the ₹2,000 without sending an alert.
+* **My Solution:** CashIQ validates the 2% / 10% math against the gross invoice. If the difference matches TDS, it marks the ₹98,000 as paid and reconciles the ₹2,000 without sending an alert.
 
 ### 5.2 GSTR-2B Input Tax Credit (ITC) Disputes
 When a debtor says *"Invoice is not reflecting on the GST portal"*, CashIQ tags the invoice as `DISPUTE_GSTR2B`, stops dunning reminders, and alerts the internal finance team to upload the invoice to GSTR-1.
 
 ### 5.3 Banking UTR Verification
-We validate Indian NEFT/RTGS UTR numbers (16-character alphanumeric strings like `SBIN00293847192`) so that debtors who have already paid aren't sent duplicate dunning emails.
+I validate Indian NEFT/RTGS UTR numbers (16-character alphanumeric strings like `SBIN00293847192`) so that debtors who have already paid aren't sent duplicate dunning emails.
 
 ---
 
 ## 6. Machine Learning & Explainability
 
 ### 6.1 LightGBM PTP Classifier & Baseline Comparison
-We trained a **LightGBM binary classifier** on 2,000 synthetic records with a 400-record stratified test split to predict payment probability $P(\text{Recovery}) \in [0.0, 1.0]$.
+I trained a **LightGBM binary classifier** on 2,000 synthetic records with a 400-record stratified test split to predict payment probability $P(\text{Recovery}) \in [0.0, 1.0]$.
 
-Here are the test results comparing our models:
+Here are the test results comparing the models:
 
 | Model / Approach | ROC-AUC | Accuracy | F1 Score | Brier Score | Notes |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -222,10 +222,10 @@ Here are the test results comparing our models:
 | **LightGBM Classifier (CashIQ)** | 0.8206 | **74.50%** | 0.7119 | **0.1725** | Captures non-linear feature interactions + supports TreeSHAP. |
 
 **Why LightGBM?**  
-Logistic Regression and LightGBM performed almost identically on ROC-AUC (0.8317 vs 0.8206). We went with LightGBM because it allows **TreeSHAP local feature attributions**, which let us show finance operators the exact percentage reasons behind every prediction.
+Logistic Regression and LightGBM performed almost identically on ROC-AUC (0.8317 vs 0.8206). I went with LightGBM because it allows **TreeSHAP local feature attributions**, which let me show finance operators the exact percentage reasons behind every prediction.
 
 ### 6.2 TreeSHAP Local Feature Attributions
-For every evaluated decision, we run TreeSHAP to show human operators why the model made its prediction:
+For every evaluated decision, CashIQ runs TreeSHAP to show human operators why the model made its prediction:
 ```
 TreeSHAP Feature Contributions:
 ├── "Valid NEFT UTR Provided":       +28.4% (Strong positive factor)
@@ -270,8 +270,8 @@ If a message is unclear (e.g. *"We have tax issues"* without specifying GST or T
 * **Price Lock:** The LLM cannot change invoice amounts or grant discounts.
 * **High-Value Gate ($> ₹2,50,000$):** Any invoice above ₹2.5L is held in the Control Center for 1-click human sign-off before any action is taken.
 
-### 7.3 How We Hardened Our Adversarial Defense
-We tested our system against a battery of 6 prompt injection attacks (overrides, fake UTRs, invalid dates like Feb 30, balance overwrite tricks):
+### 7.3 How I Hardened Adversarial Defense
+I tested the system against a battery of 6 prompt injection attacks (overrides, fake UTRs, invalid dates like Feb 30, balance overwrite tricks):
 1. **Iteration 1 (Basic Prompting):** Blocked only 1/6 attacks (16.7%). Attackers could trick the LLM into zeroing balances.
 2. **Iteration 2 (Pydantic Validation):** Blocked 3/6 attacks (50.0%). Caught bad formats, but missed semantic tricks (like invalid calendar dates).
 3. **Iteration 3 (Ambiguity Gate + Regex + Policy Gate):** Blocked 6/6 attacks (100%) by separating parsing from execution and validating dates with ISO regex.
@@ -281,7 +281,7 @@ We tested our system against a battery of 6 prompt injection attacks (overrides,
 ## 8. Deterministic Decision Replay
 
 LLMs can give slightly different outputs across runs. To make CashIQ 100% auditable:
-1. When a decision is made, we save the extracted JSON payload and a hash of the ledger state into a snapshot.
+1. When a decision is made, CashIQ saves the extracted JSON payload and a hash of the ledger state into a snapshot.
 2. During a compliance audit or review, clicking **Replay & Verify** re-runs the deterministic math, LightGBM model, and policy gates against the cached snapshot.
 3. This guarantees **100% bit-identical results** with zero API cost and zero network lag.
 
@@ -290,7 +290,7 @@ LLMs can give slightly different outputs across runs. To make CashIQ 100% audita
 ## 9. 50/50 Randomized Controlled Trial (A/B Evidence)
 
 To test CashIQ without making unsubstantiated claims:
-* We split 500 synthetic debtor accounts 50/50 using deterministic **SHA-256 hash partitioning** on `debtor_id + seed_42`.
+* I split 500 synthetic debtor accounts 50/50 using deterministic **SHA-256 hash partitioning** on `debtor_id + seed_42`.
 * **Control Group:** Standard naive dunning (sends an automated reminder email every 4 days).
 * **Treatment Group (CashIQ):** Intelligent policy (Laplace credibility filtering, fatigue penalties, TDS recognition).
 
@@ -303,7 +303,7 @@ To test CashIQ without making unsubstantiated claims:
 
 ## 10. Frontend Design & Consoles
 
-We built the frontend in React + Tailwind CSS with a dark theme (`#050508` canvas, `#6366F1` indigo accent) using Inter and JetBrains Mono fonts.
+I built the frontend in React + Tailwind CSS with a dark theme (`#050508` canvas, `#6366F1` indigo accent) using Inter and JetBrains Mono fonts.
 
 ### The 5 Dashboard Tabs:
 1. **Decision Lab:** Test scenarios, view extracted intents, inspect candidate EV tables, and check TreeSHAP feature attributions.
@@ -351,7 +351,7 @@ We built the frontend in React + Tailwind CSS with a dark theme (`#050508` canva
 
 ## 12. Automated Test Suite (50/50 Passing)
 
-We wrote 50 automated tests covering every layer of the backend in `backend/tests/`:
+I wrote 50 automated tests covering every layer of the backend in `backend/tests/`:
 
 ```bash
 & "backend\venv\Scripts\python.exe" -m pytest backend\tests\ -v

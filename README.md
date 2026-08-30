@@ -318,7 +318,7 @@ $$\mathrm{Fatigue}_{\mathrm{paise}} = \left\lfloor \mathrm{FrictionRate}(a) \tim
 | Logistic Regression | **0.8317** | 74.00% | **0.7174** | 0.1798 |
 | **LightGBM (CashIQ)** | 0.8206 | **74.50%** | 0.7119 | **0.1725** |
 
-> LightGBM and Logistic Regression perform at near parity on tabular receivables signals. We chose LightGBM because it provides exact local TreeSHAP attribution generation — surfacing interpretable impact percentages directly in the UI — not because it has a higher AUC.
+> LightGBM and Logistic Regression perform at near parity on tabular receivables signals. I chose LightGBM because it provides exact local TreeSHAP attribution generation — surfacing interpretable impact percentages directly in the UI — not because it has a higher AUC.
 
 ---
 
@@ -360,7 +360,7 @@ $$\mathrm{Fatigue}_{\mathrm{paise}} = \left\lfloor \mathrm{FrictionRate}(a) \tim
 **Rationale:**
 - **Interpretability.** LightGBM provides native TreeSHAP integration via the `shap` library. In financial decision systems, operators need to know *why* a debtor scored 73% — not just the number. TreeSHAP generates exact local attributions ("+28.4% UTR history", "−12.1% fatigue") per prediction.
 - **Small data regime.** With 2,000 synthetic invoices across realistic B2B payment patterns, LightGBM reaches ROC-AUC 0.8206 without extensive hyperparameter tuning. A neural network would require 10–100× more data for marginal gains.
-- **Honest benchmarking.** Logistic Regression actually achieves a slightly higher AUC (0.8317). We disclose this openly. LightGBM was chosen for its TreeSHAP capability, not a misleading accuracy claim.
+- **Honest benchmarking.** Logistic Regression actually achieves a slightly higher AUC (0.8317). I disclose this openly. LightGBM was chosen for its TreeSHAP capability, not a misleading accuracy claim.
 - **Latency.** Inference takes <5ms on CPU. The decision pipeline must complete before the operator context-switches.
 - **No GPU dependency.** Runs on any machine with Python 3.10+.
 
@@ -625,7 +625,7 @@ The system uses a **LightGBM gradient-boosted classifier** predicting binary pay
 
 1. **Calibrated probabilities** — The output `P(recovery)` is used directly in the EV formula. Miscalibration would cause the EV optimizer to systematically over- or under-value interventions
 2. **TreeSHAP, not permutation importance** — TreeSHAP gives exact per-prediction attributions in polynomial time. Permutation importance only gives global rankings and requires N × K forward passes
-3. **Honest near-parity with Logistic Regression** — We disclose that LR achieves AUC 0.8317 vs. LightGBM's 0.8206. The choice is driven by explainability requirements, not accuracy claims
+3. **Honest near-parity with Logistic Regression** — I disclose that LR achieves AUC 0.8317 vs. LightGBM's 0.8206. The choice is driven by explainability requirements, not accuracy claims
 
 ### Domain Architecture
 
