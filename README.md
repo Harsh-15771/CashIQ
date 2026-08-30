@@ -450,7 +450,7 @@ razorpay-cashiq/
 ├── .env.example                             # Environment variable template
 ├── .gitignore                               # Python, Node, IDE, OS exclusions
 │
-├── CASHIQS_COMPLETE_MASTER_SPECIFICATION.md # 14-section architectural compendium
+├── ARCHITECTURE.md                          # 14-section architectural blueprint & system specification
 ├── JUDGE_DEFENSE.md                         # 11 critical judge Q&A with honest benchmarks
 │
 └── README.md                                # ← You are here
@@ -629,7 +629,7 @@ Each stage has a single responsibility. Failures at any stage produce a defined 
 
 | Document | Description |
 |---|---|
-| [`CASHIQS_COMPLETE_MASTER_SPECIFICATION.md`](./CASHIQS_COMPLETE_MASTER_SPECIFICATION.md) | 14-section architectural compendium: formulas, data schemas, empirical benchmarks, adversarial evolution, and demo flow |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | 14-section architectural blueprint: formulas, data schemas, empirical benchmarks, adversarial evolution, and demo flow |
 | [`JUDGE_DEFENSE.md`](./JUDGE_DEFENSE.md) | 11 critical judge questions answered with honest ML metrics, bounded agentic tool design, and failure narratives |
 
 ---
