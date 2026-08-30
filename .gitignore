@@ -26,7 +26,7 @@ frontend/dist/
 dist/
 build/
 
-# Environment variables & secrets (CRITICAL: Never commit real keys)
+# Environment variables & secrets
 .env
 .env.*
 !.env.example
@@ -42,6 +42,13 @@ frontend/.env.*
 *.swo
 .DS_Store
 Thumbs.db
+
+# Internal scratch files & early planning notes (kept locally, ignored from GitHub)
+PLAN.md
+detailed_project_ideas.md
+b2b_receivables_intelligence_masterplan.md
+PROJECT_SPECIFICATION_AND_MERCHANT_GUIDE.md
+VERIFICATION_AND_MERCHANT_CHECK_GUIDE.md
 
 # Temporary scratch & test artifacts
 *.tmp
