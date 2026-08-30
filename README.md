@@ -371,7 +371,7 @@ $$\text{FatiguePenalty}_{\text{paise}} = \left\lfloor \text{FrictionRate}(a) \ti
 ## Project Structure
 
 ```
-razorpay-cashiq/
+CashIQ/
 ├── frontend/                                # React 18 + Vite 5 SPA
 │   ├── src/
 │   │   ├── components/
