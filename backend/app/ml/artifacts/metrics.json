@@ -1,0 +1,31 @@
+{
+  "model_name": "LightGBM Promise-to-Pay Classifier",
+  "version": "1.0.0",
+  "training_samples": 2000,
+  "test_samples": 400,
+  "roc_auc": 0.8206,
+  "brier_score": 0.1725,
+  "accuracy": 0.745,
+  "features": [
+    "historical_fulfillment_ratio",
+    "historical_avg_dbt",
+    "total_invoices_settled_count",
+    "log_invoice_amount",
+    "current_overdue_days",
+    "promise_extension_days",
+    "has_utr_stated",
+    "is_month_end_promise",
+    "has_condition_attached"
+  ],
+  "feature_importances": {
+    "historical_fulfillment_ratio": 176.0,
+    "historical_avg_dbt": 268.0,
+    "total_invoices_settled_count": 105.0,
+    "log_invoice_amount": 266.0,
+    "current_overdue_days": 251.0,
+    "promise_extension_days": 205.0,
+    "has_utr_stated": 103.0,
+    "is_month_end_promise": 12.0,
+    "has_condition_attached": 39.0
+  }
+}

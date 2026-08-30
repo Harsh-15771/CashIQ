@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #050508;
+    color: #F9FAFB;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    /* CashIQ: asymmetric indigo bloom — distinct from REVORA's red glow */
+    background-image:
+      radial-gradient(ellipse 80% 60% at 15% 0%, rgba(99, 102, 241, 0.07) 0px, transparent 70%),
+      radial-gradient(ellipse 50% 80% at 85% 100%, rgba(49, 46, 129, 0.05) 0px, transparent 60%);
+    background-attachment: fixed;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  ::selection {
+    background-color: #6366F1;
+    color: white;
+  }
+}
+
+@layer components {
+  /* ── Card Surfaces ── */
+  .card-surface {
+    background-color: #0D0D14;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    transition: all 150ms ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .card-surface:hover {
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .card-elevated {
+    background-color: #131320;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+  }
+
+  .card-glow {
+    background-color: #0D0D14;
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(99,102,241,0.12), 0 0 0 1px rgba(99,102,241,0.15);
+  }
+
+  /* Legacy compat */
+  .glass-panel { background: #0D0D14; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .glass-panel-glow { background: #0D0D14; border: 1px solid rgba(99,102,241,0.2); border-radius: 16px; box-shadow: 0 0 40px rgba(99,102,241,0.12); }
+
+  /* ── Skeleton Loader ── */
+  .skeleton {
+    border-radius: 6px;
+    background: linear-gradient(90deg, #131320 25%, rgba(255,255,255,0.06) 50%, #131320 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* ── Badge System ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-success   { background: rgba(16,185,129,0.12); color: #10B981; }
+  .badge-warning   { background: rgba(245,158,11,0.12); color: #F59E0B; }
+  .badge-danger    { background: rgba(239,68,68,0.12);  color: #EF4444; }
+  .badge-info      { background: rgba(59,130,246,0.12); color: #3B82F6; }
+  .badge-accent    { background: rgba(99,102,241,0.12); color: #6366F1; }
+  .badge-neutral   { background: rgba(75,85,99,0.2);    color: #9CA3AF; }
+
+  /* ── Provenance Badges ── */
+  .provenance {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .provenance-synthetic     { background: rgba(99,102,241,0.12);  color: #818CF8; }
+  .provenance-llm           { background: rgba(245,158,11,0.12); color: #F59E0B; }
+  .provenance-deterministic { background: rgba(16,185,129,0.12); color: #10B981; }
+  .provenance-live          { background: rgba(59,130,246,0.12); color: #60A5FA; }
+
+  /* ── Button System ── */
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-[10px] font-semibold text-sm text-white;
+    transition: all 150ms ease;
+    background: linear-gradient(135deg, #6366F1, #818CF8);
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 rounded-[10px] font-semibold text-sm;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #9CA3AF;
+    background: transparent;
+    transition: all 150ms ease;
+  }
+  .btn-outline:hover {
+    border-color: rgba(99,102,241,0.4);
+    color: #6366F1;
+    background: rgba(99,102,241,0.05);
+  }
+
+  .btn-danger-outline {
+    @apply px-4 py-2 rounded-[10px] font-semibold text-sm;
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #EF4444;
+    background: transparent;
+    transition: all 150ms ease;
+  }
+  .btn-danger-outline:hover {
+    background: rgba(239,68,68,0.08);
+  }
+
+  /* ── Section Headings ── */
+  .section-heading {
+    @apply text-lg font-semibold tracking-tight;
+    color: #F9FAFB;
+  }
+  .section-subheading {
+    @apply text-sm font-normal mt-0.5;
+    color: #9CA3AF;
+  }
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Keyframes ── */
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
