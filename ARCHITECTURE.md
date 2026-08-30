@@ -138,46 +138,46 @@ CashIQ operates on a **Split-Brain Architecture**:
 
 ### 4.1 6-Bucket Receivables Decomposition
 For any portfolio of invoices $I$:
-$$\text{Total Outstanding} = \sum_{i \in I} \text{Amount}_i = V_{\text{collectible}} + V_{\text{promised}} + V_{\text{disputed}} + V_{\text{tax\_tds}} + V_{\text{reconcile}} + V_{\text{not\_due}}$$
+$$\mathrm{Total\ Outstanding} = \sum_{i \in I} \mathrm{Amount}_i = V_{\mathrm{collectible}} + V_{\mathrm{promised}} + V_{\mathrm{disputed}} + V_{\mathrm{tax}} + V_{\mathrm{reconcile}} + V_{\mathrm{not\_due}}$$
 
 Where:
-* $V_{\text{collectible}}$: Invoices overdue with no active promise or dispute.
-* $V_{\text{promised}}$: Invoices with an active, high-credibility Promise-to-Pay ($C_{\text{ptp}} \ge 70$).
-* $V_{\text{disputed}}$: Invoices under formal commercial or GSTR-2B dispute.
-* $V_{\text{tax\_tds}}$: Lawful 2% / 1% TDS withheld under Section 194C.
-* $V_{\text{reconcile}}$: Short-payment variances pending bank feed matching.
-* $V_{\text{not\_due}}$: Invoices within standard Net 30/60 contractual terms.
+* $V_{\mathrm{collectible}}$: Invoices overdue with no active promise or dispute.
+* $V_{\mathrm{promised}}$: Invoices with an active, high-credibility Promise-to-Pay ($C_{\mathrm{ptp}} \ge 70$).
+* $V_{\mathrm{disputed}}$: Invoices under formal commercial or GSTR-2B dispute.
+* $V_{\mathrm{tax}}$: Lawful 2% / 1% TDS withheld under Section 194C.
+* $V_{\mathrm{reconcile}}$: Short-payment variances pending bank feed matching.
+* $V_{\mathrm{not\_due}}$: Invoices within standard Net 30/60 contractual terms.
 
 ---
 
-### 4.2 Debtor Promise Credibility Score ($C_{\text{ptp}} \in [0, 100]$)
+### 4.2 Debtor Promise Credibility Score ($C_{\mathrm{ptp}} \in [0, 100]$)
 
 Debtors are scored longitudinally based on four distinct weighted behavioral dimensions:
 
-$$C_{\text{ptp}} = \text{round}\left( 100 \times \left[ 0.45 \cdot \frac{\text{Kept} + 1}{\text{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\text{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\text{Age}_{\text{years}}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\text{Disputes}}{3}\right) \right] \right)$$
+$$C_{\mathrm{ptp}} = \operatorname{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
 
 #### Component Breakdown:
-1. **Laplace Smoothing ($\frac{\text{Kept} + 1}{\text{Total} + 2}$ — 45% Weight):** Prevents cold-start bias. A new debtor with 0/0 history gets a neutral prior of $50\%$, rather than $0\%$ or an error.
-2. **Days Beyond Terms ($\max(0, 1 - \frac{\text{AvgDBT}}{45})$ — 25% Weight):** Measures average historical payment delay against a 45-day benchmark.
-3. **Relationship Tenure ($\min(1, \frac{\text{Age}}{2.0})$ — 15% Weight):** Rewards multi-year trusted vendor relationships (capped at 2 years for max score).
-4. **Dispute Frequency ($\max(0, 1 - \frac{\text{Disputes}}{3})$ — 15% Weight):** Penalizes accounts that repeatedly raise procedural claims.
+1. **Laplace Smoothing ($\frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2}$ — 45% Weight):** Prevents cold-start bias. A new debtor with 0/0 history gets a neutral prior of $50\%$, rather than $0\%$ or an error.
+2. **Days Beyond Terms ($\max(0, 1 - \frac{\mathrm{AvgDBT}}{45})$ — 25% Weight):** Measures average historical payment delay against a 45-day benchmark.
+3. **Relationship Tenure ($\min(1, \frac{\mathrm{Age}}{2.0})$ — 15% Weight):** Rewards multi-year trusted vendor relationships (capped at 2 years for max score).
+4. **Dispute Frequency ($\max(0, 1 - \frac{\mathrm{Disputes}}{3})$ — 15% Weight):** Penalizes accounts that repeatedly raise procedural claims.
 
 ---
 
-### 4.3 Integer Paise Expected Value ($\text{EV}$) Engine
+### 4.3 Integer Paise Expected Value ($\mathrm{EV}$) Engine
 
-To eliminate floating-point rounding inaccuracies on currency, all calculations are executed strictly in **integer paise** ($\text{INR} \times 100$):
+To eliminate floating-point rounding inaccuracies on currency, all calculations are executed strictly in **integer paise** ($\mathrm{INR} \times 100$):
 
-$$\text{EV}(a) = \left\lfloor P_{\text{rec}}(a) \times \text{Amount}_{\text{paise}} - \text{Cost}_{\text{paise}}(a) - \text{FatiguePenalty}_{\text{paise}}(a) \right\rfloor$$
+$$\mathrm{EV}(a) = \left\lfloor P_{\mathrm{rec}}(a) \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{paise}}(a) - \mathrm{Fatigue}_{\mathrm{paise}}(a) \right\rfloor$$
 
 #### Action Candidates Evaluated:
 1. **`WAIT` (Snooze):** If debtor has high credibility and promise date is active:
-   $$\text{EV}(\text{WAIT}) = \left\lfloor P_{\text{credibility}} \times \text{Amount}_{\text{paise}} - 0 - 0 \right\rfloor$$
+   $$\mathrm{EV}(\mathrm{WAIT}) = \left\lfloor P_{\mathrm{credibility}} \times \mathrm{Amount}_{\mathrm{paise}} - 0 - 0 \right\rfloor$$
 2. **`NUDGE_EMAIL` / `NUDGE_WHATSAPP`:** Active outreach:
-   $$\text{EV}(\text{NUDGE}) = \left\lfloor P_{\text{rec}} \times \text{Amount}_{\text{paise}} - \text{Cost}_{\text{channel}} - \text{FatiguePenalty}_{\text{paise}} \right\rfloor$$
+   $$\mathrm{EV}(\mathrm{NUDGE}) = \left\lfloor P_{\mathrm{rec}} \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{channel}} - \mathrm{Fatigue}_{\mathrm{paise}} \right\rfloor$$
 3. **`ESCALATE_HUMAN`:** High-friction manual intervention ($₹500\text{--}₹1000$ legal/ops cost).
 4. **`NO_ACTION` (First-Class Candidate):**
-   $$\text{EV}(\text{NO\_ACTION}) \equiv 0\text{ paise}$$
+   $$\mathrm{EV}(\mathrm{NO\_ACTION}) \equiv 0\text{ paise}$$
    *Rule: Organic debt resolution is never claimed as AI value creation.*
 
 ---
@@ -186,7 +186,7 @@ $$\text{EV}(a) = \left\lfloor P_{\text{rec}}(a) \times \text{Amount}_{\text{pais
 
 Over-contacting debtors leads to relationship fatigue and ignored channels:
 
-$$\text{FatiguePenalty}_{\text{paise}}(a) = \left\lfloor \text{FrictionRate}(a) \times (\text{ContactCount} + 1)^{1.4} \times \text{Amount}_{\text{paise}} \right\rfloor$$
+$$\mathrm{Fatigue}_{\mathrm{paise}}(a) = \left\lfloor \mathrm{FrictionRate}(a) \times (\mathrm{ContactCount} + 1)^{1.4} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 
 * $\text{FrictionRate}(\text{Email}) = 0.005$ (0.5% value penalty)
 * $\text{FrictionRate}(\text{WhatsApp}) = 0.015$ (1.5% value penalty)

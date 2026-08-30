@@ -114,7 +114,7 @@ graph TB
     LLM -->|structured JSON| GATE
     GATE -->|validated extraction| TWIN
     TWIN -->|debtor context| LGBM
-    LGBM -->|P(recovery) + SHAP| ENGINE
+    LGBM -->|"P(recovery) + SHAP"| ENGINE
     ENGINE -->|EV candidates| GR
     GR -->|vetted action| SM
     SM -->|state transition| REPLAY
@@ -180,9 +180,9 @@ sequenceDiagram
     TWIN->>TWIN: Calculate Promise Credibility Score (0–100)
     TWIN->>ML: Debtor context features
 
-    ML->>ML: Predict P(recovery) with calibrated probabilities
+    ML->>ML: Predict recovery probability with calibrated model
     ML->>ML: Generate local TreeSHAP attributions
-    ML->>EV: P(recovery) + feature importances
+    ML->>EV: Recovery probability + feature importances
 
     EV->>EV: Evaluate all candidates (including NO_ACTION = 0)
     EV->>EV: Apply superlinear fatigue: Friction × (Contacts+1)^1.4
@@ -247,21 +247,21 @@ sequenceDiagram
 
 For any portfolio of outstanding invoices $I$:
 
-$$\text{Total Outstanding} = \sum_{i \in I} \text{Amount}_i = V_{\text{collectible}} + V_{\text{promised}} + V_{\text{disputed}} + V_{\text{tax\_tds}} + V_{\text{reconcile}} + V_{\text{not\_due}}$$
+$$\mathrm{Total\ Outstanding} = \sum_{i \in I} \mathrm{Amount}_i = V_{\mathrm{collectible}} + V_{\mathrm{promised}} + V_{\mathrm{disputed}} + V_{\mathrm{tax}} + V_{\mathrm{reconcile}} + V_{\mathrm{not\_due}}$$
 
-### 2. Debtor Promise Credibility Score ($C_{\text{ptp}} \in [0, 100]$)
+### 2. Debtor Promise Credibility Score ($C_{\mathrm{ptp}} \in [0, 100]$)
 
-$$C_{\text{ptp}} = \text{round}\left( 100 \times \left[ 0.45 \cdot \frac{\text{Kept} + 1}{\text{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\text{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\text{Age}_{\text{years}}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\text{Disputes}}{3}\right) \right] \right)$$
+$$C_{\mathrm{ptp}} = \operatorname{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
 
 > The Laplace prior `(Kept + 1) / (Total + 2)` guarantees a cold-start debtor (0 kept, 0 broken) gets exactly 50% — never NaN, never division by zero.
 
 ### 3. Integer Paise Expected Value with Customer Fatigue
 
-$$\text{EV}(a) = \left\lfloor P(a) \times \text{Amount}_{\text{paise}} - \text{Cost}_{\text{paise}} - \text{FatiguePenalty}_{\text{paise}} \right\rfloor$$
+$$\mathrm{EV}(a) = \left\lfloor P(a) \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{paise}} - \mathrm{Fatigue}_{\mathrm{paise}} \right\rfloor$$
 
 Where:
 
-$$\text{FatiguePenalty}_{\text{paise}} = \left\lfloor \text{FrictionRate}(a) \times (\text{Contacts} + 1)^{1.4} \times \text{Amount}_{\text{paise}} \right\rfloor$$
+$$\mathrm{Fatigue}_{\mathrm{paise}} = \left\lfloor \mathrm{FrictionRate}(a) \times (\mathrm{Contacts} + 1)^{1.4} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 
 > `EV(NO_ACTION) = 0` flat. Organic recovery is never claimed as AI value.
 
