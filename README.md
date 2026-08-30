@@ -452,8 +452,6 @@ razorpay-cashiq/
 │
 ├── CASHIQS_COMPLETE_MASTER_SPECIFICATION.md # 14-section architectural compendium
 ├── JUDGE_DEFENSE.md                         # 11 critical judge Q&A with honest benchmarks
-├── VERIFICATION_AND_MERCHANT_CHECK_GUIDE.md # Step-by-step merchant walkthrough
-├── PLAN.md                                  # Master 0-to-100 technical blueprint
 │
 └── README.md                                # ← You are here
 ```
@@ -633,8 +631,6 @@ Each stage has a single responsibility. Failures at any stage produce a defined 
 |---|---|
 | [`CASHIQS_COMPLETE_MASTER_SPECIFICATION.md`](./CASHIQS_COMPLETE_MASTER_SPECIFICATION.md) | 14-section architectural compendium: formulas, data schemas, empirical benchmarks, adversarial evolution, and demo flow |
 | [`JUDGE_DEFENSE.md`](./JUDGE_DEFENSE.md) | 11 critical judge questions answered with honest ML metrics, bounded agentic tool design, and failure narratives |
-| [`VERIFICATION_AND_MERCHANT_CHECK_GUIDE.md`](./VERIFICATION_AND_MERCHANT_CHECK_GUIDE.md) | Step-by-step merchant walkthrough and verification guide |
-| [`PLAN.md`](./PLAN.md) | Master 0-to-100 technical blueprint |
 
 ---
 
