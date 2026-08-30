@@ -1,62 +1,62 @@
-# ⚡ CashIQ: Complete Architectural Blueprint, System Specification & Project Compendium
+# CashIQ Architecture & System Design
 
-> **Autonomous B2B Receivables Decision Intelligence Platform**  
-> *Zero Assumptions &bull; 100% Deterministic Financial Safety &bull; Split-Brain Intelligence Architecture*
+> **Autonomous B2B Receivables Decision Intelligence**  
+> Built for the Razorpay Hackathon by Harsh  
+> Full codebase: Python (FastAPI + LightGBM + Pydantic) + React (Vite + Tailwind)
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
-1. [Executive Summary & Core Problem Statement](#1-executive-summary--core-problem-statement)
-2. [The Core Philosophy: "Outstanding ≠ Collectible Debt"](#2-the-core-philosophy-outstanding--collectible-debt)
-3. [System Architecture: The Split-Brain Design](#3-system-architecture-the-split-brain-design)
-4. [Mathematical & Algorithmic Formulations](#4-mathematical--algorithmic-formulations)
+1. [Problem Statement & Motivation](#1-problem-statement--motivation)
+2. [Core Concept: Outstanding vs Collectible Debt](#2-core-concept-outstanding-vs-collectible-debt)
+3. [System Architecture](#3-system-architecture)
+4. [Mathematical & Algorithmic Models](#4-mathematical--algorithmic-models)
    - 4.1 6-Bucket Receivables Decomposition
-   - 4.2 Debtor Promise Credibility Score ($C_{\text{ptp}}$)
-   - 4.3 Integer Paise Expected Value ($\text{EV}$) Engine
+   - 4.2 Debtor Promise Credibility Score ($C_{\mathrm{ptp}}$)
+   - 4.3 Integer Paise Expected Value ($\mathrm{EV}$) Engine
    - 4.4 Superlinear Customer Fatigue Penalty
-5. [Domain Specifics: Indian Enterprise B2B Mechanics](#5-domain-specifics-indian-enterprise-b2b-mechanics)
-   - 5.1 Section 194C TDS Withholding Variance
-   - 5.2 GSTR-2B Input Tax Credit Dispute Resolution
+5. [Indian B2B Invoicing & Tax Realities](#5-indian-b2b-invoicing--tax-realities)
+   - 5.1 Section 194C / 194J TDS Withholding
+   - 5.2 GSTR-2B Input Tax Credit (ITC) Disputes
    - 5.3 Banking UTR & NEFT Reconciliation
-6. [Machine Learning & Explainability Layer](#6-machine-learning--explainability-layer)
-   - 6.1 LightGBM PTP Classifier
-   - 6.2 TreeSHAP Local Feature Attribution
-7. [Guardrails, Security & Adversarial Defense](#7-guardrails-security--adversarial-defense)
+6. [Machine Learning & Explainability](#6-machine-learning--explainability)
+   - 6.1 LightGBM PTP Classifier & Baseline Comparison
+   - 6.2 TreeSHAP Local Feature Attributions
+7. [Guardrails & Security](#7-guardrails--security)
    - 7.1 Ambiguity Gate ("Refusal to Guess")
    - 7.2 Price-Lock & High-Value Human Gating
    - 7.3 Adversarial Prompt Injection Defense
-8. [Deterministic Decision Replay Engine](#8-deterministic-decision-replay-engine)
+8. [Deterministic Decision Replay](#8-deterministic-decision-replay)
 9. [50/50 Randomized Controlled Trial (A/B Evidence)](#9-5050-randomized-controlled-trial-ab-evidence)
-10. [Frontend UI/UX Design System & 5 Operational Consoles](#10-frontend-uiux-design-system--5-operational-consoles)
-11. [Data Models & Schema Specifications](#11-data-models--schema-specifications)
-12. [Testing, CI/CD & Verification Suite (23/23 Tests)](#12-testing-cicd--verification-suite-2323-tests)
-13. [Competitive Edge & USPs](#13-competitive-edge--usps)
-14. [Step-by-Step Developer & Demo Walkthrough](#14-step-by-step-developer--demo-walkthrough)
+10. [Frontend Design & Consoles](#10-frontend-design--consoles)
+11. [Data Models & API Schemas](#11-data-models--api-schemas)
+12. [Automated Test Suite (50/50 Passing)](#12-automated-test-suite-5050-passing)
+13. [How to Run the Project](#13-how-to-run-the-project)
 
 ---
 
-## 1. Executive Summary & Core Problem Statement
+## 1. Problem Statement & Motivation
 
-In enterprise B2B commerce, companies face massive working capital delays (often **₹100M+** across mid-market enterprise portfolios). However, industry data shows that **over 70% of payment delays are not deliberate defaults**. Instead, they stem from:
+When we looked into enterprise B2B payments in India, we noticed a huge pain point: companies often have crores in overdue invoices, but **most overdue payments aren't malicious defaults**. 
 
-1. **Procedural Invoicing Disputes:** GSTR-2B filing delays where buyers cannot claim Input Tax Credit (ITC).
-2. **Statutory Tax Withholdings:** Buyers legitimately deducting 2% or 1% TDS under Section 194C of the Income Tax Act.
-3. **Asynchronous Communication Gaps:** Inbound emails containing valid NEFT UTR numbers, partial payment promises, or requests for updated bank statements that sit unread in general finance inboxes.
-4. **Relationship Erosion via Naive Dunning:** Generic automated tools send abrasive dunning emails every 4 days regardless of debtor credibility, destroying enterprise goodwill.
+In reality, payments get delayed because of common operational reasons:
+1. **Tax Withholdings (TDS):** A buyer pays ₹98,000 on a ₹1,00,000 invoice because they legally deducted 2% TDS under Section 194C. Traditional dunning bots treat the missing ₹2,000 as delinquent debt and start spamming the client.
+2. **GST / ITC Disputes:** If the seller hasn't uploaded their invoice to the GST portal by the 11th of the month, the buyer can't claim Input Tax Credit (ITC) in GSTR-2B, so they hold payment until the invoice reflects.
+3. **Unmatched Bank Transfers:** The debtor already sent the money via NEFT and emailed a UTR reference number, but it sits unread in an accounts inbox while automated reminders keep going out.
+4. **Spam & Contact Fatigue:** Sending a payment reminder every 3–4 days irritates clients and burns enterprise goodwill.
 
-### What CashIQ Does
-CashIQ is an **Autonomous Decision Intelligence Platform** that intercepts incoming debtor communications (emails, WhatsApp messages, ERP notes), classifies intent, validates historical debtor credibility, computes exact integer paise Expected Value ($\text{EV}$) across all candidate actions, and enforces deterministic policy guardrails before executing any collection action.
+We built **CashIQ** to fix this. Instead of blindly blasting payment reminders on a timer, CashIQ acts as a decision engine: it reads incoming debtor messages (emails/WhatsApp/ERP notes), checks debtor credibility, calculates the exact Expected Value of every possible response in integer paise, and applies safety guardrails before taking action.
 
 ---
 
-## 2. The Core Philosophy: "Outstanding ≠ Collectible Debt"
+## 2. Core Concept: Outstanding vs Collectible Debt
 
-Traditional collection tools treat all overdue invoices as a homogenous block of "debt to collect." CashIQ challenges this premise with a first-principles decomposition:
+Most billing tools treat all overdue invoices as one big bucket of "debt to collect." We decompose the total outstanding ledger into 6 distinct categories:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                               TOTAL OUTSTANDING INVOICES                                │
+│                               TOTAL OUTSTANDING INVOICES                               │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
                                             │
     ┌───────────────────────┬───────────────┴───────────────┬───────────────────────┐
@@ -65,21 +65,23 @@ Traditional collection tools treat all overdue invoices as a homogenous block of
 │ COLLECTIBLE  │    │ SNOOZED PTP  │                │ UNDER        │        │ STATUTORY    │
 │ NOW          │    │ (High Trust) │                │ DISPUTE      │        │ TDS (194C)   │
 │              │    │              │                │              │        │              │
-│ Target for   │    │ Legitimate   │                │ Procedural   │        │ Legally non-  │
+│ Target for   │    │ Legitimate   │                │ Procedural   │        │ Legally non- │
 │ active       │    │ commitment;  │                │ tax/PO gap;  │        │ recoverable  │
 │ recovery     │    │ hold nudges  │                │ route to ops │        │ variance     │
 └──────────────┘    └──────────────┘                └──────────────┘        └──────────────┘
 ```
 
-By decomposing total outstanding debt into 6 distinct buckets, CashIQ prevents embarrassing communication errors (such as demanding payment from a client who already transferred the funds via NEFT or who legally deducted TDS).
+By categorizing receivables into these buckets, the system knows when to send a nudge, when to pause reminders (snooze), and when to flag an issue for the finance team.
 
 ---
 
-## 3. System Architecture: The Split-Brain Design
+## 3. System Architecture
 
-CashIQ operates on a **Split-Brain Architecture**:
+We followed a simple architectural rule: **LLMs are great at reading messy human text, but they should never make financial decisions or do math.**
 
-> **Principle:** *Large Language Models (LLMs) are exceptional at semantic unstructured extraction, but fundamentally unsafe for financial authorization, arithmetic, and policy enforcement.*
+We separated the pipeline into clear stages:
+1. **Gemini 2.0** extracts unstructured text into a strict Pydantic schema (finding promise dates, UTR numbers, tax codes).
+2. **Deterministic Python backend** computes the credibility score, runs the LightGBM classifier, calculates Expected Value in integer paise, and enforces safety rules.
 
 ```
                                 INBOUND DEBTOR PAYLOAD
@@ -134,111 +136,106 @@ CashIQ operates on a **Split-Brain Architecture**:
 
 ---
 
-## 4. Mathematical & Algorithmic Formulations
+## 4. Mathematical & Algorithmic Models
 
 ### 4.1 6-Bucket Receivables Decomposition
+
 For any portfolio of invoices $I$:
+
 $$\mathrm{Total\ Outstanding} = \sum_{i \in I} \mathrm{Amount}_i = V_{\mathrm{collectible}} + V_{\mathrm{promised}} + V_{\mathrm{disputed}} + V_{\mathrm{tax}} + V_{\mathrm{reconcile}} + V_{\mathrm{not\_due}}$$
 
 Where:
-* $V_{\mathrm{collectible}}$: Invoices overdue with no active promise or dispute.
-* $V_{\mathrm{promised}}$: Invoices with an active, high-credibility Promise-to-Pay ($C_{\mathrm{ptp}} \ge 70$).
-* $V_{\mathrm{disputed}}$: Invoices under formal commercial or GSTR-2B dispute.
-* $V_{\mathrm{tax}}$: Lawful 2% / 1% TDS withheld under Section 194C.
-* $V_{\mathrm{reconcile}}$: Short-payment variances pending bank feed matching.
-* $V_{\mathrm{not\_due}}$: Invoices within standard Net 30/60 contractual terms.
+* $V_{\mathrm{collectible}}$: Overdue invoices with no active promise or dispute.
+* $V_{\mathrm{promised}}$: Invoices with an active, high-credibility payment promise ($C_{\mathrm{ptp}} \ge 70$).
+* $V_{\mathrm{disputed}}$: Invoices with a commercial or GST dispute.
+* $V_{\mathrm{tax}}$: Legitimate 2% or 1% TDS deductions under Section 194C/194J.
+* $V_{\mathrm{reconcile}}$: Unverified bank transfers pending matching.
+* $V_{\mathrm{not\_due}}$: Invoices still within their contractual credit terms.
 
 ---
 
 ### 4.2 Debtor Promise Credibility Score ($C_{\mathrm{ptp}} \in [0, 100]$)
 
-Debtors are scored longitudinally based on four distinct weighted behavioral dimensions:
+We calculate a debtor's trustworthiness score using four weighted components:
 
 $$C_{\mathrm{ptp}} = \mathrm{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
 
-#### Component Breakdown:
-1. **Laplace Smoothing ($\frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2}$ — 45% Weight):** Prevents cold-start bias. A new debtor with 0/0 history gets a neutral prior of $50\%$, rather than $0\%$ or an error.
-2. **Days Beyond Terms ($\max(0, 1 - \frac{\mathrm{AvgDBT}}{45})$ — 25% Weight):** Measures average historical payment delay against a 45-day benchmark.
-3. **Relationship Tenure ($\min(1, \frac{\mathrm{Age}}{2.0})$ — 15% Weight):** Rewards multi-year trusted vendor relationships (capped at 2 years for max score).
-4. **Dispute Frequency ($\max(0, 1 - \frac{\mathrm{Disputes}}{3})$ — 15% Weight):** Penalizes accounts that repeatedly raise procedural claims.
+#### Why Laplace Smoothing?
+If a brand new debtor pays their very first invoice ($1/1$), a basic division gives $100\%$, which makes them look as reliable as a 5-year client with 50/50 payments. Conversely, $0/0$ causes a division by zero error. Laplace smoothing ($\frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2}$) gives brand-new debtors a neutral starting score of $50\%$, which smoothly updates as more payment data comes in.
 
 ---
 
 ### 4.3 Integer Paise Expected Value ($\mathrm{EV}$) Engine
 
-To eliminate floating-point rounding inaccuracies on currency, all calculations are executed strictly in **integer paise** ($\mathrm{INR} \times 100$):
+In financial software, standard floating-point arithmetic (like `0.1 + 0.2 = 0.30000000000000004`) causes rounding errors. We converted all monetary amounts to **integer paise** ($\mathrm{INR} \times 100$) before running calculations:
 
 $$\mathrm{EV}(a) = \left\lfloor P_{\mathrm{rec}}(a) \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{paise}}(a) - \mathrm{Fatigue}_{\mathrm{paise}}(a) \right\rfloor$$
 
 #### Action Candidates Evaluated:
-1. **`WAIT` (Snooze):** If debtor has high credibility and promise date is active:
-   $$\mathrm{EV}(\mathrm{WAIT}) = \left\lfloor P_{\mathrm{credibility}} \times \mathrm{Amount}_{\mathrm{paise}} - 0 - 0 \right\rfloor$$
-2. **`NUDGE_EMAIL` / `NUDGE_WHATSAPP`:** Active outreach:
+1. **`WAIT` (Snooze):** If the debtor is reliable and made a valid promise, we hold reminders:
+   $$\mathrm{EV}(\mathrm{WAIT}) = \left\lfloor P_{\mathrm{credibility}} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
+2. **`NUDGE_EMAIL` / `NUDGE_WHATSAPP`:** Active reminder message:
    $$\mathrm{EV}(\mathrm{NUDGE}) = \left\lfloor P_{\mathrm{rec}} \times \mathrm{Amount}_{\mathrm{paise}} - \mathrm{Cost}_{\mathrm{channel}} - \mathrm{Fatigue}_{\mathrm{paise}} \right\rfloor$$
-3. **`ESCALATE_HUMAN`:** High-friction manual intervention ($₹500\text{--}₹1000$ legal/ops cost).
-4. **`NO_ACTION` (First-Class Candidate):**
-   $$\mathrm{EV}(\mathrm{NO\_ACTION}) \equiv 0\text{ paise}$$
-   *Rule: Organic debt resolution is never claimed as AI value creation.*
+3. **`ESCALATE_HUMAN`:** High-friction manual intervention by an account manager or legal team.
+4. **`NO_ACTION`:** Defined strictly as **0 paise**. We never count natural/organic debtor payments as value created by our AI.
 
 ---
 
 ### 4.4 Superlinear Customer Fatigue Penalty
 
-Over-contacting debtors leads to relationship fatigue and ignored channels:
+Spamming debtors backfires. We modeled this with a superlinear penalty function ($(\mathrm{Contacts} + 1)^{1.4}$):
 
 $$\mathrm{Fatigue}_{\mathrm{paise}}(a) = \left\lfloor \mathrm{FrictionRate}(a) \times (\mathrm{ContactCount} + 1)^{1.4} \times \mathrm{Amount}_{\mathrm{paise}} \right\rfloor$$
 
 * $\text{FrictionRate}(\text{Email}) = 0.005$ (0.5% value penalty)
 * $\text{FrictionRate}(\text{WhatsApp}) = 0.015$ (1.5% value penalty)
-* The power exponent $1.4$ creates a **superlinear wall** after 3 contacts, mathematically penalizing spam and favoring quiet snoozes.
+* After 3 recent contacts, the penalty grows sharply, making the optimizer prefer waiting over sending another reminder.
 
 ---
 
-## 5. Domain Specifics: Indian Enterprise B2B Mechanics
+## 5. Indian B2B Invoicing & Tax Realities
 
-### 5.1 Section 194C TDS Withholding Variance
-Under Indian Tax Law, enterprise corporate buyers must deduct **2% TDS** (or 1% for individuals/HUF) on invoice amounts over threshold limits and remit to the Government.
-* **The Problem:** Invoices of ₹1,00,000 receive payments of ₹98,000. Traditional tools flag the remaining ₹2,000 as "unpaid/overdue debt."
-* **CashIQ Solution:** When UTR and payment proof is detected with 2% variance, CashIQ automatically classifies ₹98,000 as `PAID` and routes ₹2,000 to `TAX_TDS_RECONCILED` without sending collection reminders.
+### 5.1 Section 194C / 194J TDS Withholding
+Under Indian tax rules, corporate clients must deduct **2% TDS** (or 1% for individuals) under Section 194C, or **10%** under Section 194J for professional services.
+* **The Common Bug:** A debtor pays ₹98,000 on a ₹1,00,000 invoice. Standard bots treat the ₹2,000 as unpaid debt.
+* **Our Solution:** CashIQ validates the 2% / 10% math against the gross invoice. If the difference matches TDS, it marks the ₹98,000 as paid and reconciles the ₹2,000 without sending an alert.
 
-### 5.2 GSTR-2B Input Tax Credit (ITC) Dispute Resolution
-If a seller has not uploaded their GSTR-1 by the 11th of the month, the buyer cannot claim ITC in their GSTR-2B.
-* **CashIQ Solution:** Debtor messages stating *"GSTR-2B mismatch"* or *"Invoice not reflecting on portal"* are classified under `DISPUTE_GSTR2B`. Dunning is frozen, and an automatic notification is dispatched to the seller's internal tax operations team.
+### 5.2 GSTR-2B Input Tax Credit (ITC) Disputes
+When a debtor says *"Invoice is not reflecting on the GST portal"*, CashIQ tags the invoice as `DISPUTE_GSTR2B`, stops dunning reminders, and alerts the internal finance team to upload the invoice to GSTR-1.
 
 ### 5.3 Banking UTR Verification
-CashIQ regex-validates 16-character alphanumeric Indian banking UTR strings (e.g. `SBIN00293847192`, `HDFCN00918237461`) to instantly recognize completed settlements.
+We validate Indian NEFT/RTGS UTR numbers (16-character alphanumeric strings like `SBIN00293847192`) so that debtors who have already paid aren't sent duplicate dunning emails.
 
 ---
 
-## 6. Machine Learning & Explainability Layer
+## 6. Machine Learning & Explainability
 
-### 6.1 LightGBM PTP Classifier & Empirical Benchmark Disclosure
-CashIQ includes a trained **LightGBM binary classifier** (`app/ml/predictor.py`) that predicts probability of fulfillment $P(\text{Recovery}) \in [0.0, 1.0]$.
+### 6.1 LightGBM PTP Classifier & Baseline Comparison
+We trained a **LightGBM binary classifier** on 2,000 synthetic records with a 400-record stratified test split to predict payment probability $P(\text{Recovery}) \in [0.0, 1.0]$.
 
-#### Honest Empirical Model Evaluation (N=2,000 Synthetic Records, N=400 Test Split):
-| Model / Approach | ROC-AUC | Accuracy | F1 Score | Brier Score (Calibration) | Architectural Role |
+Here are the test results comparing our models:
+
+| Model / Approach | ROC-AUC | Accuracy | F1 Score | Brier Score | Notes |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Heuristic Baseline** (Historical Ratio Alone) | 0.7687 | 64.25% | 0.7039 | 0.2241 | Naive baseline prior; fails on cold-start & multi-touch fatigue. |
-| **Logistic Regression** | **0.8317** | 74.00% | **0.7174** | 0.1798 | Strong linear benchmark; lacks non-linear TreeSHAP interactions. |
-| **LightGBM Classifier (CashIQ)** | 0.8206 | **74.50%** | 0.7119 | **0.1725** | **Selected**: Non-linear feature interactions + local TreeSHAP attributions. |
+| **Heuristic Baseline** (Historical Ratio) | 0.7687 | 64.25% | 0.7039 | 0.2241 | Simple rule; fails on new debtors and message fatigue. |
+| **Logistic Regression** | **0.8317** | 74.00% | **0.7174** | 0.1798 | Strong linear baseline. |
+| **LightGBM Classifier (CashIQ)** | 0.8206 | **74.50%** | 0.7119 | **0.1725** | Captures non-linear feature interactions + supports TreeSHAP. |
 
-> **Judge Note:** LightGBM and Logistic Regression perform at near parity on tabular receivables signals ($\text{AUC } 0.8206 \text{ vs } 0.8317$). We chose LightGBM because it enables **exact local TreeSHAP attribution generation**, providing human Credit Ops leads with interpretable $+28.4\%$ UTR / $-12.1\%$ fatigue impact percentages.
+**Why LightGBM?**  
+Logistic Regression and LightGBM performed almost identically on ROC-AUC (0.8317 vs 0.8206). We went with LightGBM because it allows **TreeSHAP local feature attributions**, which let us show finance operators the exact percentage reasons behind every prediction.
 
-### 6.2 TreeSHAP Local Feature Attribution
-For every decision, CashIQ executes TreeSHAP to compute exact local feature attributions:
+### 6.2 TreeSHAP Local Feature Attributions
+For every evaluated decision, we run TreeSHAP to show human operators why the model made its prediction:
 ```
 TreeSHAP Feature Contributions:
-├── "Valid NEFT UTR Provided":       +28.4% (Strong positive driver)
-├── "High Historical Fulfillment":   +18.2% (Debtor keeps 86% of promises)
+├── "Valid NEFT UTR Provided":       +28.4% (Strong positive factor)
+├── "High Historical Fulfillment":   +18.2% (Debtor has kept 86% of past promises)
 └── "Recent Message Fatigue":        -12.1% (3 contacts in last 10 days)
 ```
-These values are surfaced directly in the Decision Lab as quantifiable percentage bars.
 
 ---
 
-## 7. Guardrails, Security & Adversarial Defense
-
-CashIQ enforces **3 immutable security guardrails**:
+## 7. Guardrails & Security
 
 ```
                                   INBOUND MESSAGE
@@ -267,75 +264,59 @@ CashIQ enforces **3 immutable security guardrails**:
 ```
 
 ### 7.1 Ambiguity Gate ("Refusal to Guess")
-If debtor communication is vague (e.g. *"We have some issues with the tax numbers"*), where no clear promise date or specific dispute code is provided, the Ambiguity Gate fires:
-* Action set to: `AMBIGUITY_GATE_HOLD`
-* Output: Refuses to guess debtor intent; routes to human credit ops with suggested clarifying question.
+If a message is unclear (e.g. *"We have tax issues"* without specifying GST or TDS), the engine refuses to guess. It flags the message as `NEEDS_REVIEW` and routes it to a human operator.
 
-### 7.3 Honest Adversarial Evolution Narrative
-Our adversarial defense was hardened across three genuine engineering generations against a 6-vector attack battery (system prompt overrides, fake UTRs, invalid leap-day date traps, balance clear injections):
+### 7.2 Price-Lock & High-Value Approvals
+* **Price Lock:** The LLM cannot change invoice amounts or grant discounts.
+* **High-Value Gate ($> ₹2,50,000$):** Any invoice above ₹2.5L is held in the Control Center for 1-click human sign-off before any action is taken.
 
-1. **Iteration 1 (Vanilla LLM Prompting):** Blocked only **1 / 6 attacks (16.7% defense)**. Prompt injections successfully convinced the LLM to mark invoice balance as 0 INR.
-2. **Iteration 2 (Strict Pydantic Validation):** Blocked **3 / 6 attacks (50.0% defense)**. Structural type validation stopped balance overwrite injections, but semantic date traps (e.g. "We will pay on Feb 30") bypassed the parser and scheduled invalid snooze dates.
-3. **Iteration 3 (Ambiguity Gate + Deterministic Policy Gate - Current):** Achieved **6 / 6 defense (100% interception)** by enforcing ISO-8601 regex date validation, decoupling semantic extraction from execution authority, and routing unverified claims to the human Action Queue.
+### 7.3 How We Hardened Our Adversarial Defense
+We tested our system against a battery of 6 prompt injection attacks (overrides, fake UTRs, invalid dates like Feb 30, balance overwrite tricks):
+1. **Iteration 1 (Basic Prompting):** Blocked only 1/6 attacks (16.7%). Attackers could trick the LLM into zeroing balances.
+2. **Iteration 2 (Pydantic Validation):** Blocked 3/6 attacks (50.0%). Caught bad formats, but missed semantic tricks (like invalid calendar dates).
+3. **Iteration 3 (Ambiguity Gate + Regex + Policy Gate):** Blocked 6/6 attacks (100%) by separating parsing from execution and validating dates with ISO regex.
 
 ---
 
-## 8. Bounded Agentic Read-Only Tool-Calling & Deterministic Decision Replay
+## 8. Deterministic Decision Replay
 
-### 8.1 Bounded Read-Only Tool Trace (Zero Write Authority)
-The reasoning agent operates with strict read-only bounded tool execution:
-* `inspect_debtor_digital_twin(debtor_id)`: Fetches Laplace ratio and historical average DBT.
-* `query_gstr2b_reconciliation_status(invoice_id)`: Checks GST portal filing status.
-* `calculate_integer_paise_ev(candidates)`: Evaluates candidate action expected values.
-* **Zero Write Authority:** The AI cannot modify database balances, delete invoices, or dispatch unverified communications.
-
-### 8.2 Deterministic Decision Replay Engine
-LLM outputs are inherently non-deterministic across repeat runs. To guarantee enterprise auditability:
-1. When an evaluation occurs, the extracted semantic payload is stored in the **Decision Replay Snapshot Cache**.
-2. When an auditor or judge clicks **Replay & Verify (DEC-ID)**:
-   - CashIQ loads the cached semantic snapshot.
-   - Re-executes the mathematical EV engine, TreeSHAP, and policy guardrails.
-   - Confirms **100% bit-identical reproducibility** without making duplicate API calls.
+LLMs can give slightly different outputs across runs. To make CashIQ 100% auditable:
+1. When a decision is made, we save the extracted JSON payload and a hash of the ledger state into a snapshot.
+2. During a compliance audit or review, clicking **Replay & Verify** re-runs the deterministic math, LightGBM model, and policy gates against the cached snapshot.
+3. This guarantees **100% bit-identical results** with zero API cost and zero network lag.
 
 ---
 
 ## 9. 50/50 Randomized Controlled Trial (A/B Evidence)
 
-To prove measurable working capital uplift without making fraudulent live claims:
-* **Methodology:** 500 synthetic seeded debtor accounts are split 50/50 using deterministic **SHA-256 hash partitioning** on `debtor_id + seed_42`.
-* **Control Arm:** Naive dunning baseline (automated reminder email sent every 4 days).
-* **Treatment Arm:** CashIQ Level 5 Policy (Laplace credibility filtering, superlinear fatigue avoidance, TDS recognition).
+To test CashIQ without making unsubstantiated claims:
+* We split 500 synthetic debtor accounts 50/50 using deterministic **SHA-256 hash partitioning** on `debtor_id + seed_42`.
+* **Control Group:** Standard naive dunning (sends an automated reminder email every 4 days).
+* **Treatment Group (CashIQ):** Intelligent policy (Laplace credibility filtering, fatigue penalties, TDS recognition).
 
-### Measured Outcome (Seed #42):
-* **Net Incremental Value Recovered:** **+₹6,57,930**
-* **Relative Recovery Uplift:** **+23.0%** (83.0% CashIQ vs 60.0% Control)
-* **Spam Emails Eliminated:** **464 messages (-62.0%)**
-
----
-
-## 10. Frontend UI/UX Design System & 5 Operational Consoles
-
-The user interface is built as a **High-Polish Fintech SaaS Console** in React + Tailwind CSS with a distinctive **Midnight Indigo** theme:
-
-```
-Background: #050508 (Canvas) ──► #0D0D14 (Surface Cards) ──► #131320 (Elevated Modals)
-Accent:     #6366F1 (Indigo-500) ──► #818CF8 (Hover)
-Typography: Inter (Body/Headings) + JetBrains Mono (Financial Numbers & Currency)
-```
-
-### The 5 Dedicated Tabs:
-1. **Decision Lab (Hero Screen):** Two-panel interactive console with vertical scenario selector, monospace input editor, live decision hero badge, provenance badges, candidate EV ranking table, and expandable TreeSHAP/Why-Not accordions.
-2. **Control Center:** Human-in-the-loop credit operations queue with status-colored card rows (amber for disputes, red for broken promises) and 1-click approvals for invoices $>₹2.5\text{L}$.
-3. **Debtor Twins:** Longitudinal relationship portfolio featuring PTP progress health bars ($0\text{--}100$), detailed debtor dossiers, and **"What Changed?" Decision Diffs**.
-4. **A/B Evidence:** Experimental validation lab featuring animated **Bar-Race comparison charts** (Control vs CashIQ) and the Deterministic Decision Replay inspector.
-5. **Ledger:** 280px probabilistic cash flow forecast chart (Contractual Due vs CashIQ Expected) and a filterable invoices table with status-colored row borders.
-6. **Top Strip:** Collapsible 40px Receivables Decomposition banner showing instant top-line metrics that expand into a proportional 6-bucket segmented bar.
+### Results (Seed #42):
+* **Net Incremental Capital Recovered:** **+₹6,57,930**
+* **Recovery Rate Uplift:** **+23.0%** (83.0% CashIQ vs 60.0% Control)
+* **Spam Emails Eliminated:** **464 messages (-61.9%)**
 
 ---
 
-## 11. Data Models & Schema Specifications
+## 10. Frontend Design & Consoles
 
-### Inbound Decision Request Schema:
+We built the frontend in React + Tailwind CSS with a dark theme (`#050508` canvas, `#6366F1` indigo accent) using Inter and JetBrains Mono fonts.
+
+### The 5 Dashboard Tabs:
+1. **Decision Lab:** Test scenarios, view extracted intents, inspect candidate EV tables, and check TreeSHAP feature attributions.
+2. **Control Center:** Human approval queue for high-value invoices ($>₹2.5\text{L}$) and procedural disputes with an audit log.
+3. **Debtor Twins:** Debtor relationship cards showing Laplace credibility gauges, PTP health bars, and "What Changed?" decision diffs.
+4. **A/B Evidence:** Live side-by-side comparison of CashIQ vs naive dunning with Decision Replay verification.
+5. **Ledger:** 30-day cash flow forecast curve and searchable invoice records.
+
+---
+
+## 11. Data Models & API Schemas
+
+### Inbound Request Example:
 ```json
 {
   "raw_email_text": "Hi Accounts, We will process invoice INV-2026-0101 for INR 45,000 on 2026-08-28 via NEFT UTR SBIN00293847192. Deducting 2% TDS. Thanks, Apex Logistics",
@@ -344,7 +325,7 @@ Typography: Inter (Body/Headings) + JetBrains Mono (Financial Numbers & Currency
 }
 ```
 
-### Decision Engine Output Schema:
+### Decision Engine Output Example:
 ```json
 {
   "decision_id": "DEC-DA2C7B3A",
@@ -362,56 +343,37 @@ Typography: Inter (Body/Headings) + JetBrains Mono (Financial Numbers & Currency
   ],
   "top_shap_factors": [
     { "display_label": "Valid NEFT UTR Provided", "impact_pct": 28.4, "positive": true }
-  ],
-  "why_why_not": {
-    "why_chosen": ["Debtor has 93/100 PTP Credibility", "Active commitment date is within 4-day window"],
-    "why_not_nudge": ["Unnecessary contact introduces customer fatigue penalty (-₹2,340)"],
-    "why_not_escalate": ["Policy veto: Credibility score exceeds threshold (93 > 70)"]
-  }
+  ]
 }
 ```
 
 ---
 
-## 12. Testing, CI/CD & Verification Suite (50/50 Tests Passing)
+## 12. Automated Test Suite (50/50 Passing)
 
-CashIQ includes a full automated test suite of **50 tests** located in `backend/tests/`:
+We wrote 50 automated tests covering every layer of the backend in `backend/tests/`:
 
 ```bash
 & "backend\venv\Scripts\python.exe" -m pytest backend\tests\ -v
 ```
 
-### Test Suite Inventory:
-* **`test_adversarial_suite.py` (3 tests):** Prompt injection interception, invalid date traps, fake UTR format validation.
-* **`test_agentic_tool_trace_and_adversarial_failure.py` (6 tests):** 3-generation adversarial evolution verification, bounded read-only tool traces, invalid date leap-year traps, and offline Gemini fallback resilience.
-* **`test_api_endpoints.py` (4 tests):** Health check, overview stats, email ingestion pipeline, 30-day forecast.
-* **`test_ev_optimizer_edge_cases.py` (8 tests):** Strictly zero-EV NO_ACTION baseline, superlinear fatigue scaling across 4 contact stages, integer paise precision, policy veto on high trust, ambiguity gate routing.
-* **`test_guardrails_and_state_machine.py` (4 tests):** TDS price locks, high-value $>₹2.5\text{L}$ gating, confidence thresholding, 3-way state transitions.
-* **`test_laplace_credibility_mathematics.py` (8 tests):** Cold-start neutral prior ($50\%$), perfect history upper bounds, default decay, score monotonicity across 5 brackets, extreme DBT delay clamping.
-* **`test_level5_suite.py` (7 tests):** Debtor twin credibility scoring, receivables decomposition, integer paise EV calculations, ambiguity refusal-to-guess, GST/TDS analysis, bit-identical decision replay, 50/50 randomized trial.
-* **`test_mime_parser.py` (2 tests):** RFC 822 signature stripping, unlinked email fallback.
-* **`test_ml_predictor.py` (3 tests):** Reliable debtor prediction, chronic delayer delay-tactic detection, cold-start prior calibration.
-* **`test_tax_and_gstr2b_reconciliation.py` (4 tests):** Corporate 194C 2%, individual 194C 1%, professional 194J 10%, and arbitrary short-payment dispute triggering.
+### Test Coverage:
+* `test_adversarial_suite.py`: Interception of prompt injections, invalid date traps, and fake UTRs.
+* `test_agentic_tool_trace_and_adversarial_failure.py`: Tests the 3-generation security evolution and fallback handling.
+* `test_api_endpoints.py`: Tests FastAPI endpoints for health, overview stats, and email ingestion.
+* `test_ev_optimizer_edge_cases.py`: Tests integer paise math, superlinear fatigue curves, and NO_ACTION baselines.
+* `test_guardrails_and_state_machine.py`: Tests price locks, high-value $>₹2.5\text{L}$ gating, and state transitions.
+* `test_laplace_credibility_mathematics.py`: Tests cold-start 50% priors, decay curves, and score clamping.
+* `test_level5_suite.py`: End-to-end testing of debtor twins, 6-bucket decomposition, and 50/50 trial logic.
+* `test_mime_parser.py`: Tests RFC 822 email header and signature parsing.
+* `test_ml_predictor.py`: Tests LightGBM prediction inference and TreeSHAP attribution outputs.
+* `test_tax_and_gstr2b_reconciliation.py`: Tests Section 194C (1% & 2%), Section 194J (10%), and GST dispute routing.
 
 ---
 
-## 13. Competitive Edge & USPs
+## 13. How to Run the Project
 
-| Key Differentiator | Traditional Dunning Software | Generic LLM Wrapper | **CashIQ Level 5 Platform** |
-| :--- | :--- | :--- | :--- |
-| **Decision Authority** | Blind cron schedule (every 4 days) | Direct LLM prompting (unpredictable) | **Split-Brain (LLM semantic $\to$ Integer Paise EV $\to$ Policy Gate)** |
-| **Currency Arithmetic** | Floating point approximations | Floating point in prompt | **Integer Paise Math ($\lfloor\text{Paise}\rfloor$)** |
-| **Indian Tax Realism** | Flags TDS deductions as bad debt | Ignores statutory deductions | **Section 194C TDS & GSTR-2B Dispute Engine** |
-| **Debtor History** | Static contact lists | None | **Laplace Longitudinal Digital Twins (0-100)** |
-| **Explainability** | Hardcoded rule IDs | Hallucinated prompt text | **TreeSHAP Local Feature Attributions** |
-| **Reproducibility** | Non-reproducible | Varied outputs per call | **100% Deterministic Bit-Identical Replay** |
-| **Security** | None | Prompt injection vulnerable | **Ambiguity Gate + Live Adversarial Interception** |
-
----
-
-## 14. Step-by-Step Developer & Demo Walkthrough
-
-### 1. Launch Backend:
+### 1. Start the Backend
 ```bash
 cd backend
 python -m venv venv
@@ -420,16 +382,16 @@ pip install -r requirements.txt
 python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 2. Launch Frontend:
+### 2. Start the Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 3. Quick 3-Minute Demo Flow for Judges:
-1. **Open `http://localhost:3000`** &bull; Point out the **Collapsible 6-Bucket Decomposition Banner** (*"Outstanding ≠ Collectible"*).
-2. **Tab 1: Decision Lab** &bull; Click Scenario 1 (*Reliable Debtor + Promise*) $\to$ Click **Run Decision Engine** $\to$ Show EV table, Integer Paise safety, and TreeSHAP explainability.
-3. **Tab 1: Adversarial Attack** &bull; Click **⚡ Adversarial Test** $\to$ Show instant interception of prompt injection.
-4. **Tab 2: Debtor Twins** &bull; Show PTP Health Bars and inspect the **"What Changed?" Decision Diff**.
-5. **Tab 4: A/B Evidence** &bull; Demonstrate the **50/50 SHA-256 Randomized Controlled Trial** with **+₹6.57L net recovery uplift**, and verify a past decision with **Decision Replay**.
+### 3. Quick Demo Walkthrough
+1. Open `http://localhost:3000`. Check the **Receivables Decomposition Strip** at the top.
+2. In the **Decision Lab** tab, select **Scenario 1 (Reliable Debtor + Promise)** and run the decision engine to see the EV candidates and TreeSHAP impact bars.
+3. Test prompt injection defense by clicking **Scenario 6 (Prompt Injection Attack)**.
+4. Switch to the **Debtor Twins** tab to view debtor profiles and the "What Changed?" decision diffs.
+5. In the **A/B Evidence** tab, check the 50/50 randomized trial results and verify a past decision with **Decision Replay**.

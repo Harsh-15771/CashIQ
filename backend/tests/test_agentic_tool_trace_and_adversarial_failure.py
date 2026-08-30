@@ -64,7 +64,7 @@ def test_invalid_date_trap_rejection(invalid_date_str):
     assert res.commitment.promised_date is None or res.confidence_score <= 0.80
 
 def test_gemini_fallback_without_api_key():
-    extractor = LLMSemanticExtractor(api_key=None)
+    extractor = LLMSemanticExtractor(api_key="")
     assert extractor.client is None
     # Still parses valid commitment deterministically without crashing
     res = extractor.extract(

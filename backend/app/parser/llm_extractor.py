@@ -48,7 +48,10 @@ CRITICAL RULES:
 """
 
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY")
+        if api_key is not None:
+            self.api_key = api_key if api_key.strip() else None
+        else:
+            self.api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY")
         self.client = None
         if self.api_key:
             try:
