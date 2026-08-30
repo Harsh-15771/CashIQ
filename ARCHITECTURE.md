@@ -154,7 +154,7 @@ Where:
 
 Debtors are scored longitudinally based on four distinct weighted behavioral dimensions:
 
-$$C_{\mathrm{ptp}} = \operatorname{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
+$$C_{\mathrm{ptp}} = \mathrm{round}\left( 100 \times \left[ 0.45 \cdot \frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2} + 0.25 \cdot \max\left(0, 1 - \frac{\mathrm{AvgDBT}}{45}\right) + 0.15 \cdot \min\left(1, \frac{\mathrm{Age}}{2.0}\right) + 0.15 \cdot \max\left(0, 1 - \frac{\mathrm{Disputes}}{3}\right) \right] \right)$$
 
 #### Component Breakdown:
 1. **Laplace Smoothing ($\frac{\mathrm{Kept} + 1}{\mathrm{Total} + 2}$ — 45% Weight):** Prevents cold-start bias. A new debtor with 0/0 history gets a neutral prior of $50\%$, rather than $0\%$ or an error.
