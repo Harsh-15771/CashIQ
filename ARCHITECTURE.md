@@ -301,16 +301,22 @@ To test CashIQ without making unsubstantiated claims:
 
 ---
 
-## 10. Frontend Design & Consoles
+## 10. Frontend Design & SaaS App Architecture
 
-I built the frontend in React + Tailwind CSS with a dark theme (`#050508` canvas, `#6366F1` indigo accent) using Inter and JetBrains Mono fonts.
+I built the frontend in React 18 + Tailwind CSS with an enterprise dark aesthetic (`#050508` canvas, `#6366F1` indigo accent) using Inter and JetBrains Mono fonts. Rather than a monolithic scrolling dashboard, each tab is a dedicated, specialized workspace:
 
-### The 5 Dashboard Tabs:
-1. **Decision Lab:** Test scenarios, view extracted intents, inspect candidate EV tables, and check TreeSHAP feature attributions.
-2. **Control Center:** Human approval queue for high-value invoices ($>₹2.5\text{L}$) and procedural disputes with an audit log.
-3. **Debtor Twins:** Debtor relationship cards showing Laplace credibility gauges, PTP health bars, and "What Changed?" decision diffs.
-4. **A/B Evidence:** Live side-by-side comparison of CashIQ vs naive dunning with Decision Replay verification.
-5. **Ledger:** 30-day cash flow forecast curve and searchable invoice records.
+### The 5 Dedicated Workspaces:
+1. **Decision Lab (AI Agent Studio):** Multi-channel inbound simulator (Email RFC-822, WhatsApp, ERP Webhook), 6-stage pipeline execution visualizer, Integer-Paise EV candidate ranking, TreeSHAP feature attributions, and live generated outbound communication previews with embedded Razorpay Smart Payment Links.
+2. **Control Center (Guardrail Triage Inbox):** Human-in-the-loop approval queue for high-value invoices ($>₹2.5\text{L}$) and procedural disputes, batch "Approve All" triage actions, and an immutable 50-event guardrail audit stream.
+3. **Debtor Twins (Customer Credit CRM):** Searchable debtor directory with risk tier categorization (Tier A, Tier B, Tier C), Laplace credibility gauges, Days Beyond Terms (DBT) meters, "What Changed?" decision diff cards, and direct simulation triggers.
+4. **A/B Evidence (Experiment Lab):** 50/50 randomized controlled trial comparison (Net Incremental Value, recovery rate uplift, spam elimination) with 100% bit-identical Decision Replay verification.
+5. **Executive Receivables Ledger:** Comprehensive financial health suite consolidating the 6-bucket portfolio aging decomposition, KPI summary cards, 30-day cash inflow forecast curve, CSV data export, and full invoice table.
+
+### Interactive App Shell Enhancements:
+* **Slide-Over Invoice Detail Drawer (`InvoiceDetailDrawer.jsx`):** Clicking any invoice or queue item opens a contextual slide-over drawer showing live Razorpay payment links, debtor credit health, and GSTR-2B compliance status.
+* **Real-Time Notification Popover (`NotificationsPopover.jsx`):** Top bar bell icon with badge count opening live guardrail events and pending approval alerts.
+* **Power-User Command Palette (`CommandPalette.jsx`):** Global `⌘K` / `Ctrl+K` shortcut for instant tab navigation and actions.
+* **Full Mobile Responsiveness:** Slide-out hamburger navigation drawer, touch-friendly 44px minimum tap targets, and master-detail navigation on small screens.
 
 ---
 

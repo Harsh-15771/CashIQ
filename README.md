@@ -420,19 +420,23 @@ CashIQ/
 ├── frontend/                                # React 18 + Vite 5 SPA
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Navbar.jsx                   # 5-tab navigation with underline indicator
-│   │   │   ├── ReceivablesBanner.jsx        # Collapsible 6-bucket portfolio decomposition
-│   │   │   ├── OverviewCards.jsx            # KPI summary cards with mono hero numbers
-│   │   │   ├── ActionQueueTab.jsx           # Control Center: card-based action queue + audit log
-│   │   │   ├── InvoicesTab.jsx              # Ledger: cash forecast chart + filterable invoice table
-│   │   │   ├── Screen2_DebtorTwin.jsx       # Debtor Twins: PTP health bars + decision diffs
-│   │   │   ├── Screen3_DemoLab.jsx          # Decision Lab: 7 scenarios + EV table + TreeSHAP
-│   │   │   ├── Screen4_ExperimentLab.jsx    # A/B Evidence: bar-race chart + decision replay
-│   │   │   └── LiveSimulatorTab.jsx         # Live scenario simulator
-│   │   ├── App.jsx                          # Tab router + layout (max-width 1400px)
-│   │   ├── api.js                           # Axios API client for backend communication
+│   │   │   ├── Navbar.jsx                   # Modern SaaS header with breadcrumbs, tenant badge & mobile drawer
+│   │   │   ├── InvoiceDetailDrawer.jsx      # Slide-over invoice inspection drawer with Razorpay smart link & debtor dossier
+│   │   │   ├── NotificationsPopover.jsx     # Real-time guardrail alerts & pending review notifications popover
+│   │   │   ├── CommandPalette.jsx           # Global ⌘K / Ctrl+K keyboard command palette
+│   │   │   ├── Toast.jsx                    # Global slide-in toast notification system (Success/Error/Info)
+│   │   │   ├── ErrorBoundary.jsx            # React error boundary with graceful tab crash recovery UI
+│   │   │   ├── ReceivablesBanner.jsx        # Collapsible 6-bucket portfolio aging decomposition
+│   │   │   ├── OverviewCards.jsx            # KPI summary cards with skeleton loading shimmers
+│   │   │   ├── ActionQueueTab.jsx           # Control Center: action triage inbox, batch approval & guardrail stream
+│   │   │   ├── InvoicesTab.jsx              # Executive Ledger: KPI suite + cash forecast + CSV export + table
+│   │   │   ├── Screen2_DebtorTwin.jsx       # Debtor Twins: searchable CRM, risk tier badges & decision diffs
+│   │   │   ├── Screen3_DemoLab.jsx          # Decision Lab: multi-channel simulator (Email/WhatsApp/ERP) + EV ranking
+│   │   │   └── Screen4_ExperimentLab.jsx    # A/B Evidence: 50/50 randomized trial + bit-identical decision replay
+│   │   ├── App.jsx                          # Root layout, hash routing, offline banner, drawer provider
+│   │   ├── api.js                           # API client for FastAPI backend communication
 │   │   ├── main.jsx                         # React DOM entry point
-│   │   └── index.css                        # Design system: tokens, card classes, animations
+│   │   └── index.css                        # Design system: tokens, card hover lift, focus rings, print styles
 │   ├── index.html                           # SEO meta tags, Inter font, indigo favicon
 │   ├── tailwind.config.js                   # CashIQ palette, Inter/Mono fonts, keyframes
 │   ├── vite.config.js                       # Proxy to backend:8000

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Zap, ShieldCheck, Users, FlaskConical, BookOpen, RefreshCw, Command } from 'lucide-react';
+import { Search, Zap, ShieldCheck, Users, FlaskConical, BookOpen, RefreshCw, Command, LayoutDashboard } from 'lucide-react';
 
 const COMMANDS = [
+  { id: 'home',           label: 'Go to Home',           icon: LayoutDashboard, tab: 'home' },
   { id: 'demolab',        label: 'Go to Decision Lab',   icon: Zap,          tab: 'demolab' },
   { id: 'control_center', label: 'Go to Control Center',  icon: ShieldCheck,  tab: 'control_center' },
   { id: 'debtor_twin',    label: 'Go to Debtor Twins',    icon: Users,        tab: 'debtor_twin' },
