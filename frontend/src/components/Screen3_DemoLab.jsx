@@ -119,9 +119,9 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
   };
 
   return (
-    <div className="flex gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
+    <div className="flex flex-col lg:flex-row gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
       {/* ════════════════════════════════════ LEFT PANEL ════════════════════════════════════ */}
-      <div className="w-[360px] flex-shrink-0 space-y-4 sticky top-[100px]">
+      <div className="w-full lg:w-[360px] flex-shrink-0 space-y-4 lg:sticky lg:top-[100px]">
 
         {/* Scenario Selector */}
         <div className="card-surface p-4">
@@ -242,7 +242,7 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
             </div>
 
             {/* ── Quick Metrics ── */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="card-surface p-4">
                 <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-1">Intent</p>
                 <p className="text-sm font-semibold text-tx-primary">{result.intent_detected}</p>

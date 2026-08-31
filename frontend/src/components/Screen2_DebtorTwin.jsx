@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users } from 'lucide-react';
+import { Users, ArrowLeft } from 'lucide-react';
 
 function getScoreColor(score) {
   if (score >= 80) return { text: 'text-success', bg: 'bg-success', bar: '#10B981' };
@@ -18,10 +18,17 @@ const EVENT_COLORS = {
 
 export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
   const [selectedTwin, setSelectedTwin] = useState(null);
+  // On mobile: false = show list, true = show detail
+  const [showDetail, setShowDetail] = useState(false);
 
   useEffect(() => {
     if (twins && twins.length > 0 && !selectedTwin) setSelectedTwin(twins[0]);
   }, [twins]);
+
+  const handleSelectTwin = (twin) => {
+    setSelectedTwin(twin);
+    setShowDetail(true); // On mobile, switch to detail view
+  };
 
   if (!twins || twins.length === 0) {
     return (
@@ -36,10 +43,10 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
   const scoreColor = getScoreColor(activeTwin.promise_credibility_score);
 
   return (
-    <div className="flex gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
+    <div className="flex flex-col lg:flex-row gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
 
       {/* ════════════ LEFT PANEL — Debtor List ════════════ */}
-      <div className="w-[300px] flex-shrink-0 space-y-1.5 sticky top-[100px]">
+      <div className={`w-full lg:w-[300px] flex-shrink-0 space-y-1.5 lg:sticky lg:top-[100px] ${showDetail ? 'hidden lg:block' : ''}`}>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Debtors</h3>
           <span className="text-[10px] font-mono text-tx-tertiary">{twins.length} total</span>
@@ -52,8 +59,8 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
           return (
             <button
               key={twin.debtor_id}
-              onClick={() => setSelectedTwin(twin)}
-              className={`w-full text-left p-3.5 rounded-[10px] transition-all duration-150 ${
+              onClick={() => handleSelectTwin(twin)}
+              className={`w-full text-left p-3.5 rounded-[10px] transition-all duration-150 min-h-[48px] ${
                 isSelected
                   ? 'card-glow'
                   : 'card-surface hover:border-white/10'
@@ -88,26 +95,35 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
       </div>
 
       {/* ════════════ RIGHT PANEL — Detail View ════════════ */}
-      <div className="flex-1 min-w-0 space-y-4 animate-fade-up" key={activeTwin.debtor_id}>
+      <div className={`flex-1 min-w-0 space-y-4 animate-fade-up ${showDetail ? '' : 'hidden lg:block'}`} key={activeTwin.debtor_id}>
+
+        {/* Mobile Back Button */}
+        <button
+          onClick={() => setShowDetail(false)}
+          className="lg:hidden flex items-center gap-2 text-sm text-tx-secondary hover:text-tx-primary transition-colors mb-2 min-h-[44px]"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to debtors
+        </button>
 
         {/* Header */}
-        <div className="card-surface p-6">
-          <div className="flex items-start justify-between">
+        <div className="card-surface p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-tx-primary tracking-tight">{activeTwin.company_name}</h2>
-              <p className="text-sm text-tx-tertiary mt-1">
+              <h2 className="text-lg sm:text-xl font-bold text-tx-primary tracking-tight">{activeTwin.company_name}</h2>
+              <p className="text-xs sm:text-sm text-tx-tertiary mt-1 flex flex-wrap gap-x-2">
                 <span className="font-mono text-tx-secondary">{activeTwin.gstin || 'No GSTIN'}</span>
-                <span className="mx-2 text-surface-border">·</span>
-                {activeTwin.relationship_age_years} year relationship
-                <span className="mx-2 text-surface-border">·</span>
+                <span className="text-surface-border hidden sm:inline">·</span>
+                <span>{activeTwin.relationship_age_years} year relationship</span>
+                <span className="text-surface-border hidden sm:inline">·</span>
                 <span className="font-mono text-tx-secondary">{activeTwin.debtor_id}</span>
               </p>
             </div>
 
             {/* Score Hero */}
-            <div className="text-right flex-shrink-0 ml-4">
+            <div className="sm:text-right flex-shrink-0">
               <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-1">Promise Credibility</p>
-              <div className={`text-3xl font-extrabold font-mono ${scoreColor.text}`}>
+              <div className={`text-2xl sm:text-3xl font-extrabold font-mono ${scoreColor.text}`}>
                 {activeTwin.promise_credibility_score}
                 <span className="text-lg text-tx-tertiary font-normal">/100</span>
               </div>
@@ -118,7 +134,7 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-white/[0.04]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 pt-4 border-t border-white/[0.04]">
             <div>
               <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-0.5">Promises Kept</p>
               <p className="text-lg font-bold font-mono text-tx-primary">
@@ -146,8 +162,8 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
         {/* ── Decision Diff ("What Changed?") ── */}
         {activeTwin.decision_diff && (
           <div className="card-surface overflow-hidden" style={{ borderLeft: '3px solid #6366F1' }}>
-            <div className="p-5">
-              <div className="flex items-center justify-between mb-3">
+            <div className="p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <h4 className="text-sm font-semibold text-tx-primary flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" />
                   What Changed?
@@ -160,12 +176,12 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
               </div>
 
               {/* Timeline mini */}
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
                 <div className="flex-1 p-3 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.02)' }}>
                   <p className="text-[10px] text-tx-tertiary">{activeTwin.decision_diff.previous_date}</p>
                   <p className="text-sm font-semibold text-tx-secondary font-mono">{activeTwin.decision_diff.previous_decision}</p>
                 </div>
-                <div className="text-tx-tertiary text-lg">→</div>
+                <div className="text-tx-tertiary text-lg text-center sm:text-left">→</div>
                 <div className="flex-1 p-3 rounded-lg" style={{ backgroundColor: 'rgba(99,102,241,0.06)' }}>
                   <p className="text-[10px] text-accent">{activeTwin.decision_diff.current_date}</p>
                   <p className="text-sm font-semibold text-success font-mono">{activeTwin.decision_diff.current_decision}</p>
@@ -180,8 +196,8 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
         )}
 
         {/* ── Timeline ── */}
-        <div className="card-surface p-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="card-surface p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <h4 className="text-sm font-semibold text-tx-primary">Payment & Commitment Timeline</h4>
             <span className="provenance-synthetic text-[9px]">Synthetic Seeded</span>
           </div>
@@ -201,16 +217,16 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
                       style={{ backgroundColor: evColor.dot, borderColor: evColor.dot }}
                     />
 
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-[12px] font-mono text-tx-secondary">{ev.date}</span>
                           <span className={`badge text-[9px] ${evColor.badge}`}>{ev.event_type}</span>
                           <span className="text-[11px] text-tx-tertiary">{ev.invoice_id}</span>
                         </div>
                         <p className="text-[13px] text-tx-tertiary mt-0.5">{ev.note}</p>
                       </div>
-                      <span className="text-[12px] font-mono font-medium text-tx-secondary flex-shrink-0 ml-3">
+                      <span className="text-[12px] font-mono font-medium text-tx-secondary flex-shrink-0">
                         ₹{ev.amount_inr.toLocaleString('en-IN')}
                       </span>
                     </div>

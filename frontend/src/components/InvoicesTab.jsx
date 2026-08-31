@@ -74,8 +74,8 @@ export default function InvoicesTab({ invoices, forecastData }) {
     <div className="space-y-5">
 
       {/* ── Cash Flow Chart ── */}
-      <div className="card-surface p-5">
-        <div className="flex items-start justify-between mb-4">
+      <div className="card-surface p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
           <div>
             <h2 className="section-heading flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-success" />
@@ -131,7 +131,7 @@ export default function InvoicesTab({ invoices, forecastData }) {
           </div>
 
           {/* Filter pills */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-wrap">
             {filters.map((status) => (
               <button
                 key={status}
@@ -155,9 +155,9 @@ export default function InvoicesTab({ invoices, forecastData }) {
                 <th className="py-2.5 px-5 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Status</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Invoice</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Debtor</th>
-                <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Due Date</th>
+                <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary hidden sm:table-cell">Due Date</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary text-right">Amount</th>
-                <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary">Promise Ratio</th>
+                <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary hidden md:table-cell">Promise Ratio</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary text-right">Priority</th>
               </tr>
             </thead>
@@ -193,7 +193,7 @@ export default function InvoicesTab({ invoices, forecastData }) {
                       <p className="font-medium text-tx-primary">{debtor?.company_name || 'Enterprise'}</p>
                       <p className="text-[10px] text-tx-tertiary">{debtor?.contact_email}</p>
                     </td>
-                    <td className="py-2.5 px-4">
+                    <td className="py-2.5 px-4 hidden sm:table-cell">
                       <span className="text-tx-secondary font-mono text-[12px]">{invoice.due_date}</span>
                       {invoice.current_overdue_days > 0 ? (
                         <span className="block text-[10px] text-danger font-bold">+{invoice.current_overdue_days}d late</span>
@@ -205,7 +205,7 @@ export default function InvoicesTab({ invoices, forecastData }) {
                       <span className="font-mono font-bold text-tx-primary">{formatINR(invoice.amount)}</span>
                       {is_high_value && <span className="block text-[9px] text-warning font-bold">&gt; ₹2.5L</span>}
                     </td>
-                    <td className="py-2.5 px-4">
+                    <td className="py-2.5 px-4 hidden md:table-cell">
                       {debtor ? (() => {
                         const kept = debtor.historical_promises_kept ?? 0;
                         const total = debtor.historical_promises_total ?? 0;

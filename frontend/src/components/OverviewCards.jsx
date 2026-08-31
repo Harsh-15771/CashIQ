@@ -2,7 +2,19 @@ import React from 'react';
 import { IndianRupee, AlertTriangle, ShieldCheck, Clock } from 'lucide-react';
 
 export default function OverviewCards({ stats }) {
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-up-1">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="card-surface p-5">
+            <div className="skeleton h-4 w-24 mb-3" />
+            <div className="skeleton h-7 w-32 mb-2" />
+            <div className="skeleton h-3 w-40" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const formatINR = (val) =>
     new Intl.NumberFormat('en-IN', {
@@ -55,7 +67,7 @@ export default function OverviewCards({ stats }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 animate-fade-up-1">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-up-1">
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (

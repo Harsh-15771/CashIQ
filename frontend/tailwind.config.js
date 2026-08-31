@@ -71,6 +71,7 @@ export default {
         'expand':     'expand 0.3s cubic-bezier(0.16, 1, 0.3, 1) both',
         'pulse-dot':  'pulseDot 2s ease-in-out infinite',
         'count-up':   'countUp 0.6s ease-out both',
+        'slide-in-left': 'slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
         fadeSlideUp: {
@@ -92,6 +93,10 @@ export default {
         countUp: {
           '0%':   { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideInLeft: {
+          '0%':   { opacity: '0', transform: 'translateX(-100%)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
     },

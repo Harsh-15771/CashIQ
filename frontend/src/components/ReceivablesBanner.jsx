@@ -49,19 +49,19 @@ export default function ReceivablesBanner({ decomposition }) {
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between px-5 py-3 text-left group"
       >
-        <div className="flex items-center gap-6 text-sm">
-          <span className="text-tx-secondary font-medium">Outstanding</span>
-          <span className="font-mono font-bold text-tx-primary text-[15px]">{formatINR(total)}</span>
+        <div className="flex items-center gap-3 sm:gap-6 text-sm flex-wrap">
+          <span className="text-tx-secondary font-medium text-xs sm:text-sm">Outstanding</span>
+          <span className="font-mono font-bold text-tx-primary text-[13px] sm:text-[15px]">{formatINR(total)}</span>
 
-          <span className="w-px h-4 bg-surface-border" />
+          <span className="w-px h-4 bg-surface-border hidden sm:block" />
 
-          <span className="text-tx-secondary font-medium">Overdue</span>
-          <span className="font-mono font-bold text-danger text-[15px]">{formatLakh(overdueAmount)}</span>
+          <span className="text-tx-secondary font-medium text-xs sm:text-sm">Overdue</span>
+          <span className="font-mono font-bold text-danger text-[13px] sm:text-[15px]">{formatLakh(overdueAmount)}</span>
 
-          <span className="w-px h-4 bg-surface-border" />
+          <span className="w-px h-4 bg-surface-border hidden sm:block" />
 
-          <span className="text-tx-secondary font-medium">Protected</span>
-          <span className="font-mono font-bold text-success text-[15px]">{formatLakh(decomposition.promised_snoozed_inr)}</span>
+          <span className="text-tx-secondary font-medium text-xs sm:text-sm">Protected</span>
+          <span className="font-mono font-bold text-success text-[13px] sm:text-[15px]">{formatLakh(decomposition.promised_snoozed_inr)}</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ export default function ReceivablesBanner({ decomposition }) {
           </div>
 
           {/* Bucket cards grid */}
-          <div className="grid grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             {buckets.map((b) => {
               const color = BUCKET_COLORS[b.key];
               const pct = ((b.amount || 0) / total * 100).toFixed(1);

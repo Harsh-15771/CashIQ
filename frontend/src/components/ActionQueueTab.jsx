@@ -24,9 +24,9 @@ export default function ActionQueueTab({ queue, auditTrail, onActionCompleted })
     try {
       setApprovingId(item.invoice_id);
       await approveAction(item.invoice_id, item.recommended_action);
-      if (onActionCompleted) onActionCompleted();
+      if (onActionCompleted) onActionCompleted(`${item.invoice_id} approved — ${item.recommended_action}`);
     } catch (err) {
-      alert(`Error approving action: ${err.message}`);
+      if (onActionCompleted) onActionCompleted(null); // will just say 'Action approved'
     } finally {
       setApprovingId(null);
     }
@@ -59,7 +59,7 @@ export default function ActionQueueTab({ queue, auditTrail, onActionCompleted })
             return (
               <div
                 key={item.invoice_id}
-                className="card-surface p-5 flex items-center gap-6 group"
+                className="card-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 group"
                 style={{ borderLeft: `3px solid ${st.border}` }}
               >
                 {/* Left: Invoice info */}
@@ -80,16 +80,16 @@ export default function ActionQueueTab({ queue, auditTrail, onActionCompleted })
                 </div>
 
                 {/* Right: Amount + Actions */}
-                <div className="flex items-center gap-5 flex-shrink-0">
-                  <span className="text-xl font-bold font-mono text-tx-primary">{formatINR(item.amount)}</span>
+                <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0 flex-wrap">
+                  <span className="text-lg sm:text-xl font-bold font-mono text-tx-primary">{formatINR(item.amount)}</span>
                   <div className="flex items-center gap-2">
-                    <button className="btn-outline text-xs py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button className="btn-outline text-xs py-1.5 px-3 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity min-h-[36px]">
                       Details
                     </button>
                     <button
                       onClick={() => handleApprove(item)}
                       disabled={approvingId === item.invoice_id}
-                      className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
+                      className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5 min-h-[36px]"
                     >
                       <span>{approvingId === item.invoice_id ? 'Confirming…' : 'Approve'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />

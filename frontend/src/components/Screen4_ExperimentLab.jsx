@@ -75,7 +75,7 @@ export default function Screen4_ExperimentLab({ onRunExperiment, onReplayDecisio
     <div className="space-y-5">
 
       {/* ── Header + Provenance ── */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h2 className="section-heading flex items-center gap-2">
             <FlaskConical className="w-5 h-5 text-accent" />
@@ -108,7 +108,7 @@ export default function Screen4_ExperimentLab({ onRunExperiment, onReplayDecisio
           </div>
 
           {/* Two smaller KPIs */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="card-surface p-5">
               <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-1.5">Recovery Rate Uplift</p>
               <p className="text-2xl font-bold font-mono text-accent">
@@ -189,7 +189,7 @@ export default function Screen4_ExperimentLab({ onRunExperiment, onReplayDecisio
           </div>
 
           {/* Re-run action panel */}
-          <div className="card-surface p-4 flex items-center justify-between">
+          <div className="card-surface p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="text-sm text-tx-secondary">
               <span className="font-mono text-tx-tertiary">Seed: 42</span>
               <span className="mx-2 text-surface-border">·</span>
@@ -225,7 +225,7 @@ export default function Screen4_ExperimentLab({ onRunExperiment, onReplayDecisio
           <span className="provenance-deterministic text-[10px]">Reproducibility</span>
         </div>
 
-        <div className="flex gap-3 items-center">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <input
             type="text"
             value={replayId}
