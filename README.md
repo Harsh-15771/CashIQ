@@ -420,19 +420,21 @@ CashIQ/
 ├── frontend/                                # React 18 + Vite 5 SPA
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── ProductSidebar.jsx           # Enterprise product navigation sidebar & topbar
 │   │   │   ├── Navbar.jsx                   # Modern SaaS header with breadcrumbs, tenant badge & mobile drawer
-│   │   │   ├── InvoiceDetailDrawer.jsx      # Slide-over invoice inspection drawer with Razorpay smart link & debtor dossier
-│   │   │   ├── NotificationsPopover.jsx     # Real-time guardrail alerts & pending review notifications popover
-│   │   │   ├── CommandPalette.jsx           # Global ⌘K / Ctrl+K keyboard command palette
-│   │   │   ├── Toast.jsx                    # Global slide-in toast notification system (Success/Error/Info)
-│   │   │   ├── ErrorBoundary.jsx            # React error boundary with graceful tab crash recovery UI
-│   │   │   ├── ReceivablesBanner.jsx        # Collapsible 6-bucket portfolio aging decomposition
-│   │   │   ├── OverviewCards.jsx            # KPI summary cards with skeleton loading shimmers
+│   │   │   ├── LandingPage.jsx              # Welcome & overview hero introduction
+│   │   │   ├── HomeTab.jsx                  # Operations command center & KPI breakdown
+│   │   │   ├── ActionReviewDrawer.jsx       # Contextual slide-over drawer for invoice review & approval
 │   │   │   ├── ActionQueueTab.jsx           # Control Center: action triage inbox, batch approval & guardrail stream
 │   │   │   ├── InvoicesTab.jsx              # Executive Ledger: KPI suite + cash forecast + CSV export + table
 │   │   │   ├── Screen2_DebtorTwin.jsx       # Debtor Twins: searchable CRM, risk tier badges & decision diffs
 │   │   │   ├── Screen3_DemoLab.jsx          # Decision Lab: multi-channel simulator (Email/WhatsApp/ERP) + EV ranking
-│   │   │   └── Screen4_ExperimentLab.jsx    # A/B Evidence: 50/50 randomized trial + bit-identical decision replay
+│   │   │   ├── Screen4_ExperimentLab.jsx    # A/B Evidence: 50/50 randomized trial + bit-identical decision replay
+│   │   │   ├── ReceivablesBanner.jsx        # Collapsible 6-bucket portfolio aging decomposition
+│   │   │   ├── OverviewCards.jsx            # KPI summary cards with skeleton loading shimmers
+│   │   │   ├── CommandPalette.jsx           # Global ⌘K / Ctrl+K keyboard command palette
+│   │   │   ├── Toast.jsx                    # Global slide-in toast notification system (Success/Error/Info)
+│   │   │   └── ErrorBoundary.jsx            # React error boundary with graceful tab crash recovery UI
 │   │   ├── App.jsx                          # Root layout, hash routing, offline banner, drawer provider
 │   │   ├── api.js                           # API client for FastAPI backend communication
 │   │   ├── main.jsx                         # React DOM entry point
