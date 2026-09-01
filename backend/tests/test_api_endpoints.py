@@ -8,7 +8,7 @@ client = TestClient(app)
 def test_health_and_root_endpoints():
     r_root = client.get("/")
     assert r_root.status_code == 200
-    assert r_root.json()["app"] == "Razorpay CashIQ"
+    assert r_root.json()["app"] == "CashIQ"
 
     r_health = client.get("/health")
     assert r_health.status_code == 200

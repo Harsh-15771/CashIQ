@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Autonomous B2B Receivables Intelligence & Guardrailed Recovery Engine on Razorpay Invoices",
+    description="Autonomous B2B Receivables Decision Intelligence & Guardrailed Recovery Engine",
     lifespan=lifespan,
 )
 

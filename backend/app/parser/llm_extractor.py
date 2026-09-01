@@ -20,7 +20,7 @@ class LLMSemanticExtractor:
     Includes deterministic fallback rules for offline testing / sandbox mode.
     """
 
-    SYSTEM_PROMPT = """You are Razorpay CashIQ's B2B Receivables Intelligence Extractor.
+    SYSTEM_PROMPT = """You are CashIQ's B2B Receivables Intelligence Extractor.
 Your task is to analyze an incoming debtor email reply regarding an invoice and extract structured accounting commitments.
 
 You must return valid JSON strictly conforming to this schema:

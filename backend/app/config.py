@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="allow")
 
     # App Info
-    APP_NAME: str = "Razorpay CashIQ"
+    APP_NAME: str = "CashIQ"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
     PORT: int = 8000

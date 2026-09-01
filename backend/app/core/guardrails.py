@@ -24,7 +24,7 @@ class GuardrailAuditEntry(BaseModel):
 
 class FinancialGuardrailEngine:
     """
-    Inviolable Financial Guardrails for Razorpay CashIQ:
+    Inviolable Financial Guardrails for CashIQ:
       1. Price-Lock: Locks payment link to (Invoice_Amount - Validated_TDS). No AI write access.
       2. Cooldown Enforcer: Max 1 proactive nudge per 4 business days.
       3. High-Value Gating: Invoices > ₹2,50,000 auto-require 1-click human confirmation.

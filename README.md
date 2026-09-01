@@ -29,8 +29,7 @@
 </p>
 
 > 🌐 **Live Web Application:** [https://cash-iq-eta.vercel.app/](https://cash-iq-eta.vercel.app/)  
-> 📖 **Interactive API Documentation:** [https://cashiq-cf8t.onrender.com/docs](https://cashiq-cf8t.onrender.com/docs)  
-> 🛡️ **Backend Health Endpoint:** [https://cashiq-cf8t.onrender.com/health](https://cashiq-cf8t.onrender.com/health)
+> 📖 **Interactive API Documentation:** [https://cashiq-cf8t.onrender.com/docs](https://cashiq-cf8t.onrender.com/docs)
 
 ---
 
