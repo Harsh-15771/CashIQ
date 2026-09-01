@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:8000/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+const API_BASE = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`;
 
 // ============================================================================
 // Core Invoices & Overview
