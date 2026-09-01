@@ -107,6 +107,7 @@ function AppInner() {
   const navigateToTab = useCallback((tabId) => {
     setActiveTab(tabId);
     window.location.hash = tabId;
+    window.scrollTo({ top: 0, behavior: 'auto' });
     document.title = `CashIQ · ${TAB_TITLES[tabId] || 'Dashboard'}`;
   }, []);
 
@@ -114,6 +115,7 @@ function AppInner() {
     const handleHash = () => {
       const tab = getTabFromHash();
       setActiveTab(tab);
+      window.scrollTo({ top: 0, behavior: 'auto' });
       document.title = `CashIQ · ${TAB_TITLES[tab] || 'Dashboard'}`;
     };
     window.addEventListener('hashchange', handleHash);
