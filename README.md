@@ -430,6 +430,8 @@ CashIQ/
 │   │   │   ├── Screen2_DebtorTwin.jsx       # Debtor Twins: searchable CRM, risk tier badges & decision diffs
 │   │   │   ├── Screen3_DemoLab.jsx          # Decision Lab: multi-channel simulator (Email/WhatsApp/ERP) + EV ranking
 │   │   │   ├── Screen4_ExperimentLab.jsx    # A/B Evidence: 50/50 randomized trial + bit-identical decision replay
+│   │   │   ├── ExecutiveSummaryModal.jsx    # 60-Second Executive Briefing modal (cash at risk, protected capital, trial uplift)
+│   │   │   ├── WhyCashIQModal.jsx           # 3-way architectural comparison matrix (Manual vs Dunning vs CashIQ)
 │   │   │   ├── ReceivablesBanner.jsx        # Collapsible 6-bucket portfolio aging decomposition
 │   │   │   ├── OverviewCards.jsx            # KPI summary cards with skeleton loading shimmers
 │   │   │   ├── CommandPalette.jsx           # Global ⌘K / Ctrl+K keyboard command palette
