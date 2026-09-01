@@ -9,9 +9,15 @@
 </p>
 
 <p align="center">
+  <a href="https://cash-iq-eta.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-cash--iq--eta.vercel.app-22C55E?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://cashiq-cf8t.onrender.com/docs"><img src="https://img.shields.io/badge/API_Docs-FastAPI_Swagger-6366F1?style=for-the-badge&logo=fastapi&logoColor=white" alt="API Docs" /></a>
+  <a href="https://github.com/Harsh-15771/CashIQ"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" /></a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?logo=google&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/Gemini-1.5_Flash-4285F4?logo=google&logoColor=white" alt="Gemini" />
   <img src="https://img.shields.io/badge/LightGBM-Classifier-02569B?logo=lightgbm&logoColor=white" alt="LightGBM" />
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Tests-50%2F50_Passing-22C55E?logo=pytest&logoColor=white" alt="Tests" />
@@ -21,6 +27,10 @@
 <p align="center">
   An intelligent receivables platform that decomposes enterprise B2B outstanding balances into six actionable working capital buckets, predicts debtor payment likelihood using a trained LightGBM classifier with TreeSHAP explainability, and optimizes next-best-action through an integer paise Expected Value engine — all governed by deterministic policy gates that ensure the AI <em>proposes</em> while the business <em>decides</em>.
 </p>
+
+> 🌐 **Live Web Application:** [https://cash-iq-eta.vercel.app/](https://cash-iq-eta.vercel.app/)  
+> 📖 **Interactive API Documentation:** [https://cashiq-cf8t.onrender.com/docs](https://cashiq-cf8t.onrender.com/docs)  
+> 🛡️ **Backend Health Endpoint:** [https://cashiq-cf8t.onrender.com/health](https://cashiq-cf8t.onrender.com/health)
 
 ---
 
