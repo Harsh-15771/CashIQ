@@ -9,7 +9,7 @@ from typing import Dict, Optional, List
 import hashlib
 from datetime import datetime
 
-from backend.app.domain.schemas import (
+from .schemas import (
     DecisionSnapshot,
     DecisionReplayVerification,
     DecisionEvaluationResult,

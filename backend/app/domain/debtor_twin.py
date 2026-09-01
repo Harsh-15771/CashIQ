@@ -6,7 +6,7 @@ and 'What Changed?' decision diff tracking.
 
 from typing import Dict, List, Optional
 from datetime import datetime, date, timedelta
-from backend.app.domain.schemas import (
+from .schemas import (
     DebtorDigitalTwin,
     TimelineEvent,
     DecisionDiff,

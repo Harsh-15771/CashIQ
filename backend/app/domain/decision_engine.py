@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Tuple
 import math
 from datetime import datetime
 
-from backend.app.domain.schemas import (
+from .schemas import (
     ActionType,
     PolicyVerdict,
     CandidateAction,
@@ -17,7 +17,7 @@ from backend.app.domain.schemas import (
     DecisionEvaluationResult,
     DataProvenance,
 )
-from backend.app.domain.debtor_twin import DebtorDigitalTwin
+from .debtor_twin import DebtorDigitalTwin
 
 
 class DecisionEngine:

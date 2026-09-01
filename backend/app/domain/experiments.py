@@ -6,7 +6,7 @@ under a reproducible seeded population (N=500, Seed=42).
 
 import hashlib
 from typing import Dict, Any
-from backend.app.domain.schemas import (
+from .schemas import (
     ExperimentMetrics,
     SimulatedExperimentSummary,
     DataProvenance,
