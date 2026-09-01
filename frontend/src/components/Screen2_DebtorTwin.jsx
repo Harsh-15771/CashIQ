@@ -168,22 +168,41 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
         </div>
 
         {/* ── Pressure & Fatigue Tolerance Card ── */}
-        <div className="card-surface p-4 sm:p-5 rounded-xl border border-white/[0.06]">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-tx-primary flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-success" />
-              Customer Fatigue & Contact Pressure Guard
-            </h4>
-            <span className="provenance-deterministic text-[9px]">Friction × (Contacts+1)^1.4</span>
+        <div className="card-surface p-4 sm:p-5 rounded-xl border border-white/[0.06] space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${
+                activeTwin.contact_count_current_cycle <= 1 ? 'bg-success' : activeTwin.contact_count_current_cycle <= 2 ? 'bg-warning' : 'bg-danger'
+              }`} />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-tx-primary">
+                Relationship Fatigue Guard
+              </h4>
+            </div>
+            <span className={`badge text-[10px] font-semibold ${
+              activeTwin.contact_count_current_cycle <= 1 ? 'badge-success' : activeTwin.contact_count_current_cycle <= 2 ? 'badge-warning' : 'badge-danger'
+            }`}>
+              {activeTwin.contact_count_current_cycle <= 1
+                ? 'Standard Outreach Permitted'
+                : activeTwin.contact_count_current_cycle <= 2
+                ? 'Pause Outreach Today'
+                : 'Outreach Locked by Policy'}
+            </span>
           </div>
-          <p className="text-xs text-tx-secondary leading-relaxed">
-            {activeTwin.contact_count_current_cycle <= 1
-              ? `Healthy relationship status (${activeTwin.contact_count_current_cycle || 1}/3 weekly touches used). Low friction penalty enables automated nudges without damaging account goodwill.`
-              : activeTwin.contact_count_current_cycle === 2
-              ? `Elevated friction load (2/3 touches used). The decision engine will penalize marginal reminders and prefer scheduled WAIT actions to prevent client churn.`
-              : `Critical contact fatigue reached (3/3 touches). Automated dunning is strictly locked by policy to protect enterprise relationship value.`}
-          </p>
-          <div className="mt-3 flex items-center gap-2 text-xs">
+
+          <div className="p-3 bg-black/40 rounded-xl border border-white/[0.04] space-y-1.5">
+            <p className="text-xs font-medium text-tx-primary">
+              {activeTwin.contact_count_current_cycle <= 1
+                ? 'Recommendation: Proceed with standard outreach. Account has low contact friction this cycle (1/3 weekly touches used); reminders will not damage account goodwill.'
+                : activeTwin.contact_count_current_cycle === 2
+                ? 'Recommendation: Pause outreach today — another reminder is predicted to reduce recovery probability and risk account goodwill. The decision engine will prefer a scheduled WAIT action.'
+                : 'Recommendation: Automated outreach suspended. Account has reached the 3/3 contact threshold; route directly to the account manager for a high-touch personal check-in.'}
+            </p>
+            <p className="text-[10px] text-tx-tertiary">
+              Decision model backing: Superlinear fatigue curve <span className="font-mono text-tx-secondary">Friction × (Contacts + 1)^1.4</span>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs pt-1">
             <span className="text-tx-tertiary text-[11px]">Weekly Fatigue Load:</span>
             <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden max-w-xs">
               <div
@@ -194,7 +213,7 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
               />
             </div>
             <span className="font-mono text-[11px] text-tx-secondary">
-              {Math.round(((activeTwin.contact_count_current_cycle || 1) / 3) * 100)}%
+              {Math.round(((activeTwin.contact_count_current_cycle || 1) / 3) * 100)}% ({activeTwin.contact_count_current_cycle || 1}/3 touches)
             </span>
           </div>
         </div>

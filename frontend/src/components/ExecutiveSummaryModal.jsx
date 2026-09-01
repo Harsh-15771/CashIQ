@@ -4,13 +4,18 @@ import { X, TrendingUp, ShieldCheck, Zap, AlertTriangle, ArrowRight, CheckCircle
 const formatINR = (val) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val || 0);
 
-export default function ExecutiveSummaryModal({ isOpen, onClose, stats, forecastData, onLaunchDemo }) {
+export default function ExecutiveSummaryModal({ isOpen, onClose, stats, forecastData, onLaunchDemo, onNavigate }) {
   if (!isOpen) return null;
 
   const totalOutstanding = stats?.total_outstanding_amount_inr || 8110000;
   const overdueAmount = stats?.total_overdue_amount_inr || 6310000;
   const snoozedVolume = stats?.snoozed_promises_volume_inr || 340000;
   const highValueCount = stats?.escalated_count || 1;
+
+  const handleDrillDown = (tabId) => {
+    onClose();
+    if (onNavigate) onNavigate(tabId);
+  };
 
   return (
     <>
@@ -32,7 +37,7 @@ export default function ExecutiveSummaryModal({ isOpen, onClose, stats, forecast
                 <span className="badge-success text-[10px]">Audit Ready</span>
               </div>
               <p className="text-xs text-tx-tertiary mt-0.5">
-                High-level overview of portfolio cash at risk, protected working capital, and policy-governed recoveries.
+                Traceable portfolio metrics, protected working capital, and policy-governed recoveries.
               </p>
             </div>
           </div>
@@ -48,30 +53,66 @@ export default function ExecutiveSummaryModal({ isOpen, onClose, stats, forecast
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
-          {/* 4 Core Hero Cards */}
+          {/* 4 Core Hero Cards with Traceable Evidence Links */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="card-surface p-4 rounded-xl border border-white/[0.06]">
-              <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Cash at Risk</p>
-              <p className="text-xl sm:text-2xl font-extrabold font-mono text-danger">{formatINR(overdueAmount)}</p>
-              <p className="text-[10px] text-tx-tertiary mt-1">Overdue balance across 20 accounts</p>
+            <div className="card-surface p-4 rounded-xl border border-white/[0.06] flex flex-col justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Cash at Risk</p>
+                <p className="text-xl sm:text-2xl font-extrabold font-mono text-danger">{formatINR(overdueAmount)}</p>
+                <p className="text-[10px] text-tx-tertiary mt-1">Overdue across 20 accounts</p>
+              </div>
+              <button
+                onClick={() => handleDrillDown('invoices')}
+                className="mt-3 text-[11px] font-semibold text-accent hover:text-accent-hover flex items-center gap-1 text-left pt-2 border-t border-white/[0.04]"
+              >
+                <span>View 20 Invoices</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
 
-            <div className="card-surface p-4 rounded-xl border border-white/[0.06]">
-              <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Protected Capital</p>
-              <p className="text-xl sm:text-2xl font-extrabold font-mono text-success">{formatINR(snoozedVolume)}</p>
-              <p className="text-[10px] text-tx-tertiary mt-1">Active verified promises (Snoozed)</p>
+            <div className="card-surface p-4 rounded-xl border border-white/[0.06] flex flex-col justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Protected Capital</p>
+                <p className="text-xl sm:text-2xl font-extrabold font-mono text-success">{formatINR(snoozedVolume)}</p>
+                <p className="text-[10px] text-tx-tertiary mt-1">Verified promises snoozed</p>
+              </div>
+              <button
+                onClick={() => handleDrillDown('debtor_twin')}
+                className="mt-3 text-[11px] font-semibold text-success hover:underline flex items-center gap-1 text-left pt-2 border-t border-white/[0.04]"
+              >
+                <span>View Debtor Twins</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
 
-            <div className="card-surface p-4 rounded-xl border border-white/[0.06]">
-              <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Spam Prevented</p>
-              <p className="text-xl sm:text-2xl font-extrabold font-mono text-accent">464 Emails</p>
-              <p className="text-[10px] text-tx-tertiary mt-1">-61.9% reduction in client fatigue</p>
+            <div className="card-surface p-4 rounded-xl border border-white/[0.06] flex flex-col justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Spam Prevented</p>
+                <p className="text-xl sm:text-2xl font-extrabold font-mono text-accent">464 Emails</p>
+                <p className="text-[10px] text-tx-tertiary mt-1">-61.9% fatigue reduction</p>
+              </div>
+              <button
+                onClick={() => handleDrillDown('debtor_twin')}
+                className="mt-3 text-[11px] font-semibold text-accent hover:text-accent-hover flex items-center gap-1 text-left pt-2 border-t border-white/[0.04]"
+              >
+                <span>View Fatigue Guard</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
 
-            <div className="card-surface p-4 rounded-xl border border-white/[0.06]">
-              <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Net Trial Uplift</p>
-              <p className="text-xl sm:text-2xl font-extrabold font-mono text-success">+₹6,57,930</p>
-              <p className="text-[10px] text-tx-tertiary mt-1">+23.0% recovery uplift vs control</p>
+            <div className="card-surface p-4 rounded-xl border border-white/[0.06] flex flex-col justify-between">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-wider text-tx-tertiary mb-1">Net Trial Uplift</p>
+                <p className="text-xl sm:text-2xl font-extrabold font-mono text-success">+₹6,57,930</p>
+                <p className="text-[10px] text-tx-tertiary mt-1">+23.0% vs control (N=500)</p>
+              </div>
+              <button
+                onClick={() => handleDrillDown('experiments')}
+                className="mt-3 text-[11px] font-semibold text-success hover:underline flex items-center gap-1 text-left pt-2 border-t border-white/[0.04]"
+              >
+                <span>View A/B Evidence</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
             </div>
           </div>
 

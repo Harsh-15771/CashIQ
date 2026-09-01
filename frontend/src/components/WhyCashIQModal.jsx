@@ -7,44 +7,44 @@ export default function WhyCashIQModal({ isOpen, onClose }) {
   const comparisonRows = [
     {
       dimension: 'Inbound Communication Understanding',
-      manual: 'Manual email triage taking 2–4 hours/day per finance clerk.',
-      dunning: 'Blind timer; ignores reply emails and client payment updates.',
-      cashiq: 'Gemini 1.5 Pro parses intent, promised dates, UTRs, and tax deductions with Ambiguity Gate refusal.',
+      manual: 'Manual email triage taking 2–4 hours/day per accounts receivable clerk.',
+      dunning: 'Fixed schedule cadence; does not parse customer reply context or payment confirmations.',
+      cashiq: 'Gemini 1.5 Pro extracts intent, promised dates, UTRs, and tax deductions with Ambiguity Gate refusal.',
       highlight: true,
     },
     {
       dimension: 'Indian Tax & TDS Compliance (Sec 194C/194J)',
-      manual: 'Manual month-end reconciliation of Form 26AS; discrepancies treated as disputes.',
-      dunning: 'Zero tax awareness; treats lawful 2% TDS deduction as delinquent debt and spams client.',
+      manual: 'Manual month-end reconciliation of Form 26AS; withholding variances often misclassified.',
+      dunning: 'Unaware of Section 194C/194J; treats lawful 2% TDS deduction as delinquent debt.',
       cashiq: 'Native TDS recognition; automatically locks post-TDS settlement amount without penalty.',
       highlight: true,
     },
     {
-      dimension: 'GSTR-2B Input Tax Credit (ITC) Locks',
-      manual: 'Phone calls between accounting teams to verify portal filings.',
-      dunning: 'Cannot detect GST filing status; keeps dunning during active portal mismatches.',
-      cashiq: 'Deterministic GSTR-2B lock guardrail pauses aggressive dunning and issues reconciliation memo.',
+      dimension: 'GSTR-2B Input Tax Credit (ITC) Matching',
+      manual: 'Offline coordination between accounting teams to verify government portal filings.',
+      dunning: 'Cannot detect GST filing status; continues dunning during active portal mismatches.',
+      cashiq: 'Deterministic GSTR-2B lock guardrail pauses aggressive outreach and issues reconciliation memo.',
       highlight: false,
     },
     {
-      dimension: 'Decision Making & Value Attribution',
-      manual: 'Subjective intuition of individual collection agents.',
-      dunning: 'Sends reminder every N days; claims 100% of organic customer payments as bot value.',
-      cashiq: 'Integer-Paise Expected Value optimizer evaluates NO_ACTION = 0; only claims true net incremental uplift.',
+      dimension: 'Decision Logic & Value Attribution',
+      manual: 'Subjective prioritization by individual agents without probabilistic calibration.',
+      dunning: 'Static reminder cadence; attributes 100% of organic customer payments to dunning activity.',
+      cashiq: 'Integer-Paise Expected Value optimizer evaluates NO_ACTION = 0; isolates true net incremental recovery.',
       highlight: true,
     },
     {
       dimension: 'Customer Relationship Protection',
-      manual: 'Inconsistent; depends on collector personality.',
-      dunning: 'Harasses enterprise clients with repetitive emails, burning long-term contract goodwill.',
-      cashiq: 'Superlinear fatigue model: Friction × (Contacts + 1)^1.4 automatically vetos over-contacting.',
+      manual: 'Variable; relies on individual collector discretion.',
+      dunning: 'Repetitive reminders on fixed schedules risk account fatigue on strategic enterprise clients.',
+      cashiq: 'Superlinear fatigue model: Friction × (Contacts + 1)^1.4 automatically prioritizes WAIT to protect relationships.',
       highlight: true,
     },
     {
-      dimension: 'Hallucination Defense & Guardrails',
+      dimension: 'Safety Governance & Guardrails',
       manual: 'Human errors and unauthorized verbal commitments.',
-      dunning: 'No reasoning capability.',
-      cashiq: 'Price-lock rule, >₹2.5L human-in-the-loop approval gate, and 100% bit-identical decision replay.',
+      dunning: 'Fixed rule templates without contextual safety bounds.',
+      cashiq: 'Deterministic Price-Lock rule, >₹2.5L human approval gate, and 100% bit-identical decision replay.',
       highlight: false,
     },
   ];
@@ -69,7 +69,7 @@ export default function WhyCashIQModal({ isOpen, onClose }) {
                 <span className="badge-accent text-[10px]">Architectural Comparison</span>
               </div>
               <p className="text-xs text-tx-tertiary mt-0.5">
-                How CashIQ’s evidence-driven, policy-controlled engine differs from manual spreadsheets and naive dunning bots.
+                Comparing manual ledgers, rules-based dunning, and context-aware decision intelligence.
               </p>
             </div>
           </div>
@@ -92,13 +92,13 @@ export default function WhyCashIQModal({ isOpen, onClose }) {
                     Capability / Dimension
                   </th>
                   <th className="py-3.5 px-4 text-[11px] font-bold uppercase tracking-wider text-tx-secondary w-1/4 bg-white/[0.01]">
-                    Manual Excel / ERP
+                    Manual Spreadsheets & ERP
                   </th>
-                  <th className="py-3.5 px-4 text-[11px] font-bold uppercase tracking-wider text-danger/80 w-1/4">
-                    Naive Dunning Bots
+                  <th className="py-3.5 px-4 text-[11px] font-bold uppercase tracking-wider text-warning w-1/4">
+                    Rules-Based Dunning
                   </th>
                   <th className="py-3.5 px-4 text-[11px] font-bold uppercase tracking-wider text-accent w-1/4 bg-accent/[0.04]">
-                    ⚡ CashIQ Autonomous OS
+                    ⚡ CashIQ (Context-Aware)
                   </th>
                 </tr>
               </thead>

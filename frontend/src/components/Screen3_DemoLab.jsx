@@ -273,10 +273,13 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
                 </p>
 
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.04]">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-mono text-tx-tertiary">Smart Link:</span>
-                    <span className="text-xs font-mono text-accent">
+                    <span className="text-xs font-mono text-accent bg-accent/[0.08] px-2 py-0.5 rounded border border-accent/20">
                       https://rzp.io/i/{(SCENARIOS.find(s => s.id === selectedScenario)?.invId || 'inv-2026-0101').toLowerCase()}
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded bg-warning/10 border border-warning/25 text-warning text-[9px] font-mono font-semibold uppercase tracking-wider">
+                      Demo Sandbox Link
                     </span>
                   </div>
                   <span className="text-[10px] text-tx-tertiary font-mono">

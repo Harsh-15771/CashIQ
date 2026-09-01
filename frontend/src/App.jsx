@@ -182,6 +182,7 @@ function AppInner() {
         stats={stats}
         forecastData={forecastData}
         onLaunchDemo={() => navigateToTab('demolab')}
+        onNavigate={navigateToTab}
       />
 
       {/* Command Palette */}
