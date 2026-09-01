@@ -133,12 +133,12 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 pt-4 border-t border-white/[0.04]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/[0.04]">
             <div>
               <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-0.5">Promises Kept</p>
               <p className="text-lg font-bold font-mono text-tx-primary">
                 {activeTwin.promises_kept}/{activeTwin.total_promises}
-                <span className="text-sm text-tx-secondary font-normal ml-1">
+                <span className="text-xs text-tx-secondary font-normal ml-1">
                   ({(activeTwin.laplace_fulfillment_ratio * 100).toFixed(0)}%)
                 </span>
               </p>
@@ -146,7 +146,7 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
             <div>
               <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-0.5">Avg Delay</p>
               <p className="text-lg font-bold font-mono text-tx-primary">
-                +{activeTwin.average_dbt_days.toFixed(1)}<span className="text-sm text-tx-secondary font-normal">d DBT</span>
+                +{activeTwin.average_dbt_days.toFixed(1)}<span className="text-xs text-tx-secondary font-normal">d DBT</span>
               </p>
             </div>
             <div>
@@ -155,6 +155,47 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
                 ₹{(activeTwin.total_outstanding_inr || 0).toLocaleString('en-IN')}
               </p>
             </div>
+            <div>
+              <p className="text-[10px] text-tx-tertiary uppercase tracking-wider mb-0.5">Pressure Tolerance</p>
+              <p className={`text-lg font-bold font-mono ${activeTwin.contact_count_current_cycle <= 1 ? 'text-success' : activeTwin.contact_count_current_cycle <= 2 ? 'text-warning' : 'text-danger'}`}>
+                {activeTwin.contact_count_current_cycle <= 1 ? 'High' : activeTwin.contact_count_current_cycle <= 2 ? 'Medium' : 'Low'}
+                <span className="text-xs text-tx-tertiary font-normal ml-1">
+                  ({activeTwin.contact_count_current_cycle || 1}/3 contacts)
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Pressure & Fatigue Tolerance Card ── */}
+        <div className="card-surface p-4 sm:p-5 rounded-xl border border-white/[0.06]">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-tx-primary flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-success" />
+              Customer Fatigue & Contact Pressure Guard
+            </h4>
+            <span className="provenance-deterministic text-[9px]">Friction × (Contacts+1)^1.4</span>
+          </div>
+          <p className="text-xs text-tx-secondary leading-relaxed">
+            {activeTwin.contact_count_current_cycle <= 1
+              ? `Healthy relationship status (${activeTwin.contact_count_current_cycle || 1}/3 weekly touches used). Low friction penalty enables automated nudges without damaging account goodwill.`
+              : activeTwin.contact_count_current_cycle === 2
+              ? `Elevated friction load (2/3 touches used). The decision engine will penalize marginal reminders and prefer scheduled WAIT actions to prevent client churn.`
+              : `Critical contact fatigue reached (3/3 touches). Automated dunning is strictly locked by policy to protect enterprise relationship value.`}
+          </p>
+          <div className="mt-3 flex items-center gap-2 text-xs">
+            <span className="text-tx-tertiary text-[11px]">Weekly Fatigue Load:</span>
+            <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden max-w-xs">
+              <div
+                className={`h-full rounded-full ${
+                  activeTwin.contact_count_current_cycle <= 1 ? 'bg-success' : activeTwin.contact_count_current_cycle <= 2 ? 'bg-warning' : 'bg-danger'
+                }`}
+                style={{ width: `${Math.min(100, ((activeTwin.contact_count_current_cycle || 1) / 3) * 100)}%` }}
+              />
+            </div>
+            <span className="font-mono text-[11px] text-tx-secondary">
+              {Math.round(((activeTwin.contact_count_current_cycle || 1) / 3) * 100)}%
+            </span>
           </div>
         </div>
 

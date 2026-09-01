@@ -12,6 +12,8 @@ import Screen2_DebtorTwin from './components/Screen2_DebtorTwin';
 import Screen3_DemoLab from './components/Screen3_DemoLab';
 import Screen4_ExperimentLab from './components/Screen4_ExperimentLab';
 import CommandPalette from './components/CommandPalette';
+import WhyCashIQModal from './components/WhyCashIQModal';
+import ExecutiveSummaryModal from './components/ExecutiveSummaryModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastProvider, useToast } from './components/Toast';
 
@@ -60,6 +62,8 @@ function AppInner() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [reviewingAction, setReviewingAction] = useState(null);
   const [isApprovingReview, setIsApprovingReview] = useState(false);
+  const [isExecutiveModalOpen, setIsExecutiveModalOpen] = useState(false);
+  const [isWhyModalOpen, setIsWhyModalOpen] = useState(false);
   const toast = useToast();
 
   /* ── Data Loading ── */
@@ -150,6 +154,8 @@ function AppInner() {
         activeTab={activeTab}
         onNavigate={navigateToTab}
         pendingActionCount={queue.length}
+        onOpenWhyModal={() => setIsWhyModalOpen(true)}
+        onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
       />
 
       <div className="min-w-0 flex-1 flex flex-col">
@@ -159,6 +165,23 @@ function AppInner() {
         isRefreshing={isRefreshing}
         onRefresh={() => loadData(true)}
         onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+        onOpenWhyModal={() => setIsWhyModalOpen(true)}
+        onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
+      />
+
+      {/* Why CashIQ Modal */}
+      <WhyCashIQModal
+        isOpen={isWhyModalOpen}
+        onClose={() => setIsWhyModalOpen(false)}
+      />
+
+      {/* 60s Executive Summary Modal */}
+      <ExecutiveSummaryModal
+        isOpen={isExecutiveModalOpen}
+        onClose={() => setIsExecutiveModalOpen(false)}
+        stats={stats}
+        forecastData={forecastData}
+        onLaunchDemo={() => navigateToTab('demolab')}
       />
 
       {/* Command Palette */}

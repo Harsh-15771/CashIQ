@@ -47,7 +47,7 @@ function NavigationItem({ item, activeTab, onNavigate, pendingActionCount }) {
   );
 }
 
-export default function ProductSidebar({ activeTab, onNavigate, pendingActionCount }) {
+export default function ProductSidebar({ activeTab, onNavigate, pendingActionCount, onOpenWhyModal, onOpenExecutiveModal }) {
   return (
     <aside className="hidden lg:flex w-[252px] shrink-0 sticky top-0 h-screen flex-col border-r border-white/[0.07] bg-[#090911] px-3 py-5">
       <button type="button" onClick={() => onNavigate('home')} className="px-3 mb-8 flex items-center gap-3 text-left">
@@ -70,11 +70,11 @@ export default function ProductSidebar({ activeTab, onNavigate, pendingActionCou
       </nav>
 
       <div className="mt-auto space-y-1 pt-5 border-t border-white/[0.06]">
-        <button type="button" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-tx-secondary hover:bg-white/[0.05] hover:text-tx-primary">
-          <BookOpen className="w-4 h-4" /><span className="font-medium">Knowledge base</span>
+        <button type="button" onClick={onOpenExecutiveModal} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-accent bg-accent/[0.08] hover:bg-accent/[0.14] font-semibold transition-colors">
+          <Zap className="w-4 h-4 fill-current" /><span>60s Executive Briefing</span>
         </button>
-        <button type="button" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-tx-secondary hover:bg-white/[0.05] hover:text-tx-primary">
-          <Settings className="w-4 h-4" /><span className="font-medium">Settings</span>
+        <button type="button" onClick={onOpenWhyModal} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-tx-secondary hover:bg-white/[0.05] hover:text-tx-primary transition-colors">
+          <BookOpen className="w-4 h-4" /><span className="font-medium">Why CashIQ?</span>
         </button>
         <button type="button" className="w-full flex items-center gap-3 px-3 py-2.5 mt-2 rounded-xl bg-white/[0.035] border border-white/[0.05] text-left">
           <span className="w-7 h-7 rounded-full bg-gradient-to-br from-[#818cf8] to-[#c084fc] flex items-center justify-center text-[11px] font-bold text-white">H</span>
@@ -86,7 +86,7 @@ export default function ProductSidebar({ activeTab, onNavigate, pendingActionCou
   );
 }
 
-export function ProductTopbar({ onOpenCommandPalette, onRefresh, isRefreshing, pendingActionCount, onNavigate }) {
+export function ProductTopbar({ onOpenCommandPalette, onRefresh, isRefreshing, pendingActionCount, onNavigate, onOpenWhyModal, onOpenExecutiveModal }) {
   return (
     <header className="sticky top-0 z-40 h-16 flex items-center justify-between px-4 sm:px-6 border-b border-white/[0.07] bg-[#090911]/85 backdrop-blur-xl">
       <button type="button" onClick={() => onNavigate('home')} className="lg:hidden flex items-center gap-2">
@@ -98,6 +98,13 @@ export function ProductTopbar({ onOpenCommandPalette, onRefresh, isRefreshing, p
         <BrainCircuit className="w-4 h-4" /><span className="text-xs flex-1 text-left">Search customers, invoices, or actions</span><kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.06]">⌘ K</kbd>
       </button>
       <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <button type="button" onClick={onOpenExecutiveModal} className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent/[0.1] border border-accent/25 text-accent hover:bg-accent/[0.18] transition-colors text-xs font-semibold">
+          <Zap className="w-3.5 h-3.5 fill-current" />
+          <span>60s Briefing</span>
+        </button>
+        <button type="button" onClick={onOpenWhyModal} className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.035] border border-white/[0.08] text-tx-secondary hover:text-tx-primary hover:bg-white/[0.06] transition-colors text-xs font-medium">
+          <span>Why CashIQ?</span>
+        </button>
         <button type="button" onClick={onRefresh} title="Refresh workspace" className="p-2 rounded-lg text-tx-tertiary hover:text-tx-primary hover:bg-white/[0.05]">
           <Activity className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-accent' : ''}`} />
         </button>
@@ -106,7 +113,6 @@ export function ProductTopbar({ onOpenCommandPalette, onRefresh, isRefreshing, p
           {pendingActionCount > 0 && <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-danger text-[9px] font-bold text-white flex items-center justify-center">{pendingActionCount}</span>}
         </button>
         <span className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-success/20 bg-success/[0.06] text-[10px] font-medium text-success"><span className="w-1.5 h-1.5 rounded-full bg-success" />Live data</span>
-        <CircleHelp className="hidden sm:block w-4 h-4 text-tx-tertiary" />
       </div>
     </header>
   );

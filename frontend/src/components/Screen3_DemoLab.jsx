@@ -240,6 +240,52 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
               </p>
             </div>
 
+            {/* ── Generated Outbound Communication & Smart Link Dispatch ── */}
+            <div className="card-surface p-5 rounded-xl border border-accent/20 bg-accent/[0.02]">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" />
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-accent">
+                    Generated Communication Draft & Payment Action
+                  </h4>
+                </div>
+                <span className="badge-accent text-[10px]">Human-in-the-Loop Review</span>
+              </div>
+
+              <div className="p-4 bg-black/40 rounded-xl border border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between text-xs border-b border-white/[0.04] pb-2">
+                  <span className="text-tx-tertiary font-medium">Proposed Outbound Dispatch:</span>
+                  <span className="font-mono text-tx-secondary text-[11px] uppercase">
+                    Channel: {result.selected_action === 'NUDGE' ? 'WhatsApp / Email Nudge' : result.selected_action === 'WAIT' ? 'Internal Hold Queue' : 'Credit Ops Escalation'}
+                  </span>
+                </div>
+
+                <p className="text-xs text-tx-secondary leading-relaxed font-sans">
+                  {result.selected_action === 'NUDGE' ? (
+                    `"Dear ${SCENARIOS.find(s => s.id === selectedScenario)?.debtorId || 'Accounts Team'}, thank you for confirming payment of INR ${result.locked_settlement_amount_inr?.toLocaleString('en-IN')}. We have recorded your commitment for invoice ${SCENARIOS.find(s => s.id === selectedScenario)?.invId || 'INV-2026-0101'}. To settle immediately with automated NEFT/UPI reconciliation, use your Razorpay link below."`
+                  ) : result.selected_action === 'WAIT' ? (
+                    `"We have scheduled a 14-day hold on automated reminders for ${SCENARIOS.find(s => s.id === selectedScenario)?.invId || 'INV-2026-0103'} to give your team time for CFO sign-off. Your updated ledger statement remains accessible."`
+                  ) : result.selected_action === 'ESCALATE' ? (
+                    `"Dispute Flagged: GSTR-2B Input Tax Credit discrepancy recorded for ${SCENARIOS.find(s => s.id === selectedScenario)?.invId || 'INV-2026-0102'}. Automated dunning is frozen, and an internal reconciliation statement has been routed to the account manager."`
+                  ) : (
+                    `"Notice of Variance: Statutory TDS deduction of ${result.tds_rate_pct}% recorded under Section 194C. Invoice ledger updated accordingly."`
+                  )}
+                </p>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.04]">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-tx-tertiary">Smart Link:</span>
+                    <span className="text-xs font-mono text-accent">
+                      https://rzp.io/i/{(SCENARIOS.find(s => s.id === selectedScenario)?.invId || 'inv-2026-0101').toLowerCase()}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-tx-tertiary font-mono">
+                    Locked Settlement: ₹{result.locked_settlement_amount_inr?.toLocaleString('en-IN')} (Post-{result.tds_rate_pct}% TDS)
+                  </span>
+                </div>
+              </div>
+            </div>
+
             {/* ── Quick Metrics ── */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="card-surface p-4">
