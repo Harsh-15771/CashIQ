@@ -3,6 +3,7 @@ import json
 import joblib
 import numpy as np
 import pandas as pd
+from typing import Optional
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, brier_score_loss, accuracy_score, classification_report
 import lightgbm as lgb
@@ -23,10 +24,10 @@ FEATURE_COLUMNS = [
 ]
 
 
-def train_ptp_model(n_samples: int = 5000, random_state: int = 42) -> dict:
+def train_ptp_model(n_samples: int = 5000, random_state: int = 42, artifacts_dir: Optional[str] = None) -> dict:
     """
     Trains the LightGBM Promise-to-Pay Fulfillment Classifier and creates a TreeSHAP explainer.
-    Saves model artifacts to backend/app/ml/artifacts/.
+    Saves model artifacts to artifacts_dir (defaults to backend/app/ml/artifacts/).
     """
     print(f"Generating {n_samples} synthetic training records...")
     df = generate_ptp_dataset(n_samples=n_samples, random_state=random_state)
@@ -72,7 +73,8 @@ def train_ptp_model(n_samples: int = 5000, random_state: int = 42) -> dict:
     explainer = shap.TreeExplainer(model)
 
     # 6. Artifact Serialization
-    artifacts_dir = os.path.join(os.path.dirname(__file__), "artifacts")
+    if artifacts_dir is None:
+        artifacts_dir = os.path.join(os.path.dirname(__file__), "artifacts")
     os.makedirs(artifacts_dir, exist_ok=True)
 
     model_path = os.path.join(artifacts_dir, "ptp_classifier.joblib")

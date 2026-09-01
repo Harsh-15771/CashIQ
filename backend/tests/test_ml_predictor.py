@@ -13,9 +13,9 @@ from backend.app.ml.train import train_ptp_model
 @pytest.fixture(scope="module")
 def trained_predictor(tmp_path_factory):
     tmp_dir = str(tmp_path_factory.mktemp("ml_artifacts"))
-    metrics = train_ptp_model(n_samples=2000)
+    metrics = train_ptp_model(n_samples=2000, artifacts_dir=tmp_dir)
     assert metrics["roc_auc"] >= 0.75, f"Expected ROC-AUC >= 0.75, got {metrics['roc_auc']}"
-    return PTPPredictor()
+    return PTPPredictor(artifacts_dir=tmp_dir)
 
 
 def test_reliable_debtor_with_utr_prediction(trained_predictor):
