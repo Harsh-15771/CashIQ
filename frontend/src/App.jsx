@@ -26,6 +26,7 @@ import {
   fetchReceivablesDecomposition,
   fetchDebtorTwins,
   approveAction,
+  rejectAction,
   evaluateDecision,
   replayDecision,
   runExperiment,
@@ -50,6 +51,7 @@ function getTabFromHash() {
 
 function AppInner() {
   const [activeTab, setActiveTab] = useState(getTabFromHash);
+  const [userRole, setUserRole] = useState('ops'); // 'ops' | 'cfo'
   const [stats, setStats] = useState(null);
   const [decomposition, setDecomposition] = useState(null);
   const [debtorTwins, setDebtorTwins] = useState([]);
@@ -158,6 +160,8 @@ function AppInner() {
         pendingActionCount={queue.length}
         onOpenWhyModal={() => setIsWhyModalOpen(true)}
         onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
+        role={userRole}
+        onRoleChange={setUserRole}
       />
 
       <div className="min-w-0 flex-1 flex flex-col">
@@ -197,20 +201,41 @@ function AppInner() {
       <ActionReviewDrawer
         item={reviewingAction}
         isApproving={isApprovingReview}
+        userRole={userRole}
         onClose={() => setReviewingAction(null)}
         onApprove={async () => {
           const action = reviewingAction;
           if (!action) return;
           try {
             setIsApprovingReview(true);
-            await approveAction(action.invoice_id, action.recommended_action);
+            await approveAction(
+              action.invoice_id,
+              action.recommended_action,
+              userRole === 'cfo' ? 'cfo_controller' : 'credit_ops_lead'
+            );
             setReviewingAction(null);
             loadData();
-            toast.success(`${action.invoice_id} approved`);
+            toast.success(`${action.invoice_id} ${userRole === 'cfo' ? 'authorized by CFO' : 'approved'}`);
           } catch {
             toast.error('Unable to approve this action. Please try again.');
           } finally {
             setIsApprovingReview(false);
+          }
+        }}
+        onReject={async () => {
+          const action = reviewingAction;
+          if (!action) return;
+          try {
+            await rejectAction(
+              action.invoice_id,
+              action.recommended_action,
+              userRole === 'cfo' ? 'cfo_controller' : 'credit_ops_lead'
+            );
+            setReviewingAction(null);
+            loadData();
+            toast.success(`${action.invoice_id} rejected`);
+          } catch {
+            toast.error('Unable to reject this action. Please try again.');
           }
         }}
       />
@@ -249,6 +274,7 @@ function AppInner() {
                 auditTrail={auditTrail}
                 onActionCompleted={(msg) => { loadData(); toast.success(msg || 'Action approved'); }}
                 onReviewAction={setReviewingAction}
+                userRole={userRole}
               />
             )}
 

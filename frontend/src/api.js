@@ -30,18 +30,33 @@ export async function fetchActionQueue() {
   return res.json();
 }
 
-export async function approveAction(invoiceId, approvedAction, notes = '') {
+export async function approveAction(invoiceId, approvedAction, approvedBy = 'credit_ops_lead', notes = '') {
   const res = await fetch(`${API_BASE}/actions/approve`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       invoice_id: invoiceId,
       approved_action: approvedAction,
-      approved_by: 'credit_ops_lead',
+      approved_by: approvedBy,
       notes,
     }),
   });
   if (!res.ok) throw new Error('Failed to approve action');
+  return res.json();
+}
+
+export async function rejectAction(invoiceId, approvedAction, rejectedBy = 'credit_ops_lead', notes = '') {
+  const res = await fetch(`${API_BASE}/actions/reject`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      invoice_id: invoiceId,
+      approved_action: approvedAction,
+      approved_by: rejectedBy,
+      notes,
+    }),
+  });
+  if (!res.ok) throw new Error('Failed to reject action');
   return res.json();
 }
 

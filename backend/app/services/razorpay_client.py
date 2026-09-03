@@ -79,6 +79,12 @@ class RazorpayLedgerService:
                     razorpay_payment_link_id=f"plink_{inv_id.replace('-', '_').lower()}",
                 )
 
+        # Ensure Bharat Heavy Precision Tools has an explicit high-value overdue invoice (> ₹2.5L)
+        if "INV-2026-0402" in self.invoices:
+            self.invoices["INV-2026-0402"].amount = 380000.0
+            self.invoices["INV-2026-0402"].status = InvoiceStatus.OVERDUE
+            self.invoices["INV-2026-0402"].current_overdue_days = 28
+
     def _process_seed_inbound_events(self):
         """
         Runs realistic initial inbound interactions through the real LLM extractor,

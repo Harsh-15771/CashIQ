@@ -193,11 +193,13 @@ CRITICAL RULES:
             r"ignore\s+(all\s+)?previous\s+instructions",
             r"system\s*override",
             r"set\s+(the\s+)?balance\s+to\s+0",
+            r"clear\s+(all\s+)?(the\s+)?(debt|balance|invoices?)",
             r"waive\s+all\s+(outstanding\s+)?fees",
             r"grant\s+full\s+clearance",
             r"you\s+are\s+now\s+in\s+developer\s+mode",
-            r"<script>",
-            r"\{\{.*\}\}",
+            r"jailbreak|bypass\s+(all\s+)?(security\s+)?rules|prompt\s*injection",
+            r"forget\s+everything|do\s+not\s+collect|mark\s+as\s+paid",
+            r"drop\s+table|delete\s+from|<script>|\{\{.*\}\}",
         ]
         text_lower = text.lower()
         return any(re.search(pat, text_lower) for pat in injection_patterns)

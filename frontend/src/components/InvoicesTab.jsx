@@ -56,6 +56,13 @@ function ChartTooltip({ active, payload, label }) {
 
 export default function InvoicesTab({ invoices, forecastData }) {
   const [selectedStatus, setSelectedStatus] = useState('ALL');
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  React.useEffect(() => {
+    if (selectedItem) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [selectedItem]);
 
   const filteredInvoices = invoices.filter((item) => {
     if (selectedStatus === 'ALL') return true;
@@ -158,10 +165,12 @@ export default function InvoicesTab({ invoices, forecastData }) {
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary text-right">Amount</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary hidden md:table-cell">Promise Ratio</th>
                 <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary text-right">Priority</th>
+                <th className="py-2.5 px-4 text-[10px] font-semibold uppercase tracking-[0.06em] text-tx-tertiary text-center">Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredInvoices.map(({ invoice, debtor, priority_score, is_high_value }) => {
+              {filteredInvoices.map((item) => {
+                const { invoice, debtor, priority_score, is_high_value } = item;
                 const status = invoice.status;
                 const borderColor = ROW_BORDER[status] || 'transparent';
                 const rowBg = ROW_BG[status] || 'transparent';
@@ -169,7 +178,8 @@ export default function InvoicesTab({ invoices, forecastData }) {
                 return (
                   <tr
                     key={invoice.invoice_id}
-                    className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors"
+                    onClick={() => setSelectedItem(item)}
+                    className="border-b border-white/[0.02] hover:bg-white/[0.04] transition-colors cursor-pointer group"
                     style={{
                       backgroundColor: rowBg,
                       borderLeft: borderColor !== 'transparent' ? `3px solid ${borderColor}` : 'none',
@@ -183,9 +193,9 @@ export default function InvoicesTab({ invoices, forecastData }) {
                     <td className="py-2.5 px-4">
                       <span className="font-mono font-medium text-accent">{invoice.invoice_id}</span>
                       {invoice.razorpay_payment_link_id && (
-                        <a href={`https://rzp.io/i/${invoice.invoice_id.toLowerCase()}`} target="_blank" rel="noreferrer" className="ml-1 text-tx-tertiary hover:text-accent">
+                        <span className="ml-1.5 text-tx-tertiary group-hover:text-accent">
                           <ExternalLink className="w-3 h-3 inline" />
-                        </a>
+                        </span>
                       )}
                     </td>
                     <td className="py-2.5 px-4">
@@ -227,6 +237,18 @@ export default function InvoicesTab({ invoices, forecastData }) {
                     <td className="py-2.5 px-4 text-right font-mono text-[12px] text-warning font-medium">
                       {formatINR(priority_score)}
                     </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedItem(item);
+                        }}
+                        className="px-2.5 py-1 rounded bg-white/[0.04] hover:bg-accent hover:text-white border border-white/[0.08] text-[11px] font-medium transition-colors"
+                      >
+                        View Details →
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -234,6 +256,101 @@ export default function InvoicesTab({ invoices, forecastData }) {
           </table>
         </div>
       </div>
+
+      {/* ── Invoice Detail Drawer / Modal ── */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-[80] flex justify-end" role="dialog" aria-modal="true">
+          <div
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm transition-opacity"
+            onClick={() => setSelectedItem(null)}
+          />
+          <aside className="relative h-full w-full max-w-lg overflow-y-auto border-l border-white/[0.1] bg-[#0d0d14] shadow-2xl p-6 flex flex-col space-y-5 animate-fade-up">
+            <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-accent-hover">Invoice Intelligence Drawer</p>
+                <h3 className="text-lg font-bold font-mono text-tx-primary mt-1">{selectedItem.invoice.invoice_id}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                className="p-1.5 rounded-lg text-tx-tertiary hover:bg-white/[0.06] hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Debtor Profile Card */}
+            <div className="card-surface p-4 rounded-xl border border-white/[0.08] space-y-2">
+              <p className="text-[10px] uppercase tracking-wider text-tx-tertiary font-semibold">Debtor Account</p>
+              <h4 className="text-base font-bold text-tx-primary">{selectedItem.debtor?.company_name || 'Enterprise Account'}</h4>
+              <p className="text-xs text-tx-secondary">{selectedItem.debtor?.contact_email}</p>
+              <p className="text-xs text-tx-tertiary font-mono">GSTIN: {selectedItem.debtor?.gstin || '27AABCT3518Q1Z8'}</p>
+            </div>
+
+            {/* Section 194C TDS Calculation Breakdown */}
+            <div className="card-surface p-4 rounded-xl border border-accent/20 bg-accent/[0.02] space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-accent">Section 194C TDS Breakdown</span>
+                <span className="badge-accent text-[9px]">Statutory Rate 2%</span>
+              </div>
+              <div className="space-y-1.5 text-xs font-mono">
+                <div className="flex justify-between text-tx-secondary">
+                  <span>Gross Invoice Value:</span>
+                  <span>{formatINR(selectedItem.invoice.amount)}</span>
+                </div>
+                <div className="flex justify-between text-warning">
+                  <span>Legitimate 2% TDS Withheld:</span>
+                  <span>−{formatINR(selectedItem.invoice.amount * 0.02)}</span>
+                </div>
+                <div className="pt-2 border-t border-white/[0.06] flex justify-between font-bold text-tx-primary text-sm">
+                  <span>Price-Locked Net Receivable:</span>
+                  <span className="text-success">{formatINR(selectedItem.invoice.amount * 0.98)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Behavioral & Payment Schedule */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="card-surface p-3.5 rounded-xl border border-white/[0.06]">
+                <p className="text-[10px] text-tx-tertiary uppercase font-semibold">Contractual Due</p>
+                <p className="mt-1 text-sm font-mono font-bold text-tx-primary">{selectedItem.invoice.due_date}</p>
+                <p className="mt-0.5 text-[11px] text-danger">{selectedItem.invoice.current_overdue_days > 0 ? `+${selectedItem.invoice.current_overdue_days} days late` : 'Current'}</p>
+              </div>
+              <div className="card-surface p-3.5 rounded-xl border border-white/[0.06]">
+                <p className="text-[10px] text-tx-tertiary uppercase font-semibold">Laplace Credibility</p>
+                <p className="mt-1 text-sm font-mono font-bold text-accent">
+                  {selectedItem.debtor ? `${Math.round(((selectedItem.debtor.historical_promises_kept + 1) / (selectedItem.debtor.historical_promises_total + 2)) * 100)}%` : '50% (Prior)'}
+                </p>
+                <p className="mt-0.5 text-[11px] text-tx-tertiary">Historical fulfillment ratio</p>
+              </div>
+            </div>
+
+            {/* Payment Link Action */}
+            <div className="card-surface p-4 rounded-xl border border-white/[0.08] space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-tx-primary">Smart Payment Link</span>
+                <span className="px-1.5 py-0.5 rounded bg-warning/10 border border-warning/25 text-warning text-[9px] font-mono uppercase">
+                  Demo Sandbox Link
+                </span>
+              </div>
+              <p className="text-xs font-mono text-accent bg-accent/[0.08] p-2.5 rounded-lg border border-accent/20 truncate">
+                https://rzp.io/i/{selectedItem.invoice.invoice_id.toLowerCase()}
+              </p>
+              <p className="text-[11px] text-tx-tertiary">Cryptographically locked to post-TDS settlement amount. No AI write-access.</p>
+            </div>
+
+            <div className="mt-auto pt-4 border-t border-white/[0.06]">
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                className="btn-outline w-full py-2.5 text-xs"
+              >
+                Close Drawer
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }

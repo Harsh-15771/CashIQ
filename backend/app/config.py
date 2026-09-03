@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # LLM Settings (Gemini Flash)
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-2.0-flash"
 
     # Operational Guardrail Thresholds
     EXTRACTION_CONFIDENCE_GATE: float = 0.80

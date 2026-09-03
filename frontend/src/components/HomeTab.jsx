@@ -23,11 +23,16 @@ export default function HomeTab({ stats, queue = [], invoices = [], forecastData
   const totalExpected = forecastData?.total_cashiq_predicted_volume || 0;
   const paidCount = invoices.filter((item) => item.invoice?.status === 'PAID').length;
   const firstName = 'Harsh';
+  const todayFormatted = new Intl.DateTimeFormat('en-IN', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+  }).format(new Date()).toUpperCase();
 
   return <div className="space-y-6 animate-fade-up">
     <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
       <div>
-        <div className="flex items-center gap-2 text-xs font-medium text-accent-hover"><span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-dot" />MONDAY, 01 SEPTEMBER</div>
+        <div className="flex items-center gap-2 text-xs font-medium text-accent-hover"><span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-dot" />{todayFormatted}</div>
         <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-tx-primary">Good morning, {firstName}.</h1>
         <p className="mt-2 text-sm text-tx-secondary">Here’s what needs attention to keep this week’s cash on track.</p>
       </div>
@@ -50,7 +55,14 @@ export default function HomeTab({ stats, queue = [], invoices = [], forecastData
         {highPriority.length ? <div className="divide-y divide-white/[0.05]">
           {highPriority.map((item, index) => <button type="button" key={item.invoice_id} onClick={() => onNavigate('control_center')} className="w-full p-4 sm:px-6 flex gap-4 text-left hover:bg-white/[0.025] transition-colors">
             <span className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs font-bold ${index === 0 ? 'bg-danger/15 text-danger' : 'bg-accent/10 text-accent-hover'}`}>{index + 1}</span>
-            <span className="min-w-0 flex-1"><span className="flex flex-wrap gap-x-2 gap-y-1 items-center"><span className="text-sm font-semibold text-tx-primary">{item.debtor_name}</span><span className="badge badge-warning text-[9px]">{item.status?.replace('_', ' ')}</span></span><span className="block mt-1 text-xs text-tx-secondary truncate">{item.reason || `Review the recommendation for ${item.invoice_id}`}</span><span className="block mt-2 text-[10px] font-semibold uppercase tracking-wide text-accent-hover">Recommended: {item.recommended_action?.replaceAll('_', ' ')}</span></span>
+            <span className="min-w-0 flex-1">
+              <span className="flex flex-wrap gap-x-2 gap-y-1 items-center">
+                <span className="text-sm font-semibold text-tx-primary">{item.debtor_name}</span>
+                <span className="badge badge-warning text-[9px]">{item.status?.replace('_', ' ')}</span>
+              </span>
+              <span className="block mt-1 text-xs text-tx-secondary truncate">{item.reason || `Review the recommendation for ${item.invoice_id}`}</span>
+              <span className="block mt-2 text-[10px] font-semibold uppercase tracking-wide text-accent-hover">Recommended: {item.recommended_action?.replaceAll('_', ' ')}</span>
+            </span>
             <span className="hidden sm:block text-sm font-bold font-mono text-tx-primary whitespace-nowrap">{formatINR(item.amount)}</span><ArrowRight className="w-4 h-4 mt-1 text-tx-tertiary" />
           </button>)}
         </div> : <div className="p-10 text-center"><CheckCircle2 className="w-7 h-7 mx-auto text-success" /><p className="mt-3 text-sm font-semibold">Your priority queue is clear</p><p className="mt-1 text-xs text-tx-secondary">CashIQ is monitoring your receivables for changes.</p></div>}

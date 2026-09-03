@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, ArrowLeft } from 'lucide-react';
+import { Users, ArrowLeft, Zap } from 'lucide-react';
 
 function getScoreColor(score) {
   if (score >= 80) return { text: 'text-success', bg: 'bg-success', bar: '#10B981' };
@@ -117,6 +117,14 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
                 <span className="text-surface-border hidden sm:inline">·</span>
                 <span className="font-mono text-tx-secondary">{activeTwin.debtor_id}</span>
               </p>
+              <button
+                type="button"
+                onClick={() => onSelectDebtorForDemo?.(activeTwin.debtor_id)}
+                className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 mt-3 shadow-accent-sm"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>Test with Decision Engine →</span>
+              </button>
             </div>
 
             {/* Score Hero */}
@@ -189,16 +197,13 @@ export default function Screen2_DebtorTwin({ twins, onSelectDebtorForDemo }) {
             </span>
           </div>
 
-          <div className="p-3 bg-black/40 rounded-xl border border-white/[0.04] space-y-1.5">
-            <p className="text-xs font-medium text-tx-primary">
+          <div className="p-3 bg-black/40 rounded-xl border border-white/[0.04]">
+            <p className="text-xs font-medium text-tx-secondary leading-relaxed">
               {activeTwin.contact_count_current_cycle <= 1
-                ? 'Recommendation: Proceed with standard outreach. Account has low contact friction this cycle (1/3 weekly touches used); reminders will not damage account goodwill.'
+                ? 'Standard outreach permitted. Low contact friction this cycle; reminders will not risk relationship goodwill.'
                 : activeTwin.contact_count_current_cycle === 2
-                ? 'Recommendation: Pause outreach today — another reminder is predicted to reduce recovery probability and risk account goodwill. The decision engine will prefer a scheduled WAIT action.'
-                : 'Recommendation: Automated outreach suspended. Account has reached the 3/3 contact threshold; route directly to the account manager for a high-touch personal check-in.'}
-            </p>
-            <p className="text-[10px] text-tx-tertiary">
-              Decision model backing: Superlinear fatigue curve <span className="font-mono text-tx-secondary">Friction × (Contacts + 1)^1.4</span>
+                ? 'Outreach paused today. An additional reminder is predicted to lower recovery probability and cause counterparty fatigue.'
+                : 'Automated outreach locked. Contact limit reached; routed to account manager for personal follow-up.'}
             </p>
           </div>
 

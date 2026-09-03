@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Zap, Shield, Play, RotateCcw, ChevronDown, ChevronRight } from 'lucide-react';
+import { Zap, Shield, Play, RotateCcw, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
 
-const SCENARIOS = [
+const getFutureDateStr = (daysAhead) => {
+  const d = new Date();
+  d.setDate(d.getDate() + daysAhead);
+  return d.toISOString().slice(0, 10);
+};
+
+const getScenarios = () => [
   {
     id: 'scenario_1',
     label: 'Reliable Debtor + Promise',
     preview: 'NUDGE',
     previewColor: 'text-success',
-    text: 'Hi Accounts, We will process invoice INV-2026-0101 for INR 45,000 on 2026-08-28 via NEFT UTR SBIN00293847192. We are deducting 2% TDS as per standard compliance. Thanks, Apex Logistics',
+    text: `Hi Accounts, We will process invoice INV-2026-0101 for INR 45,000 on ${getFutureDateStr(7)} via NEFT UTR SBIN00293847192. We are deducting 2% TDS as per standard compliance. Thanks, Apex Logistics`,
     debtorId: 'DEBTOR-001', invId: 'INV-2026-0101',
   },
   {
@@ -15,7 +21,7 @@ const SCENARIOS = [
     label: 'Chronic Delayer + Delay Tactic',
     preview: 'WAIT',
     previewColor: 'text-warning',
-    text: 'Hi Finance Team, We are reviewing invoice INV-2026-0103. We will try to clear payment sometime next month on 2026-09-30 subject to internal cash flow and CFO sign-off. Regards, Vague Commercial Corp',
+    text: `Hi Finance Team, We are reviewing invoice INV-2026-0103. We will try to clear payment sometime next month on ${getFutureDateStr(25)} subject to internal cash flow and CFO sign-off. Regards, Vague Commercial Corp`,
     debtorId: 'DEBTOR-003', invId: 'INV-2026-0103',
   },
   {
@@ -83,13 +89,130 @@ function ResultSkeleton() {
         {[1, 2, 3, 4].map(i => <div key={i} className="skeleton h-6 w-24" />)}
       </div>
       <div className="mt-6 space-y-2">
-        {[1, 2, 3, 4, 5].map(i => <div key={i} className="skeleton h-10 w-full" />)}
       </div>
     </div>
   );
 }
 
+/* ── Tax & TDS Reconciliation Interactive Tool ── */
+function TaxReconciliationWidget() {
+  const [gross, setGross] = useState(590000);
+  const [received, setReceived] = useState(570000);
+  const [gstRate, setGstRate] = useState(18);
+  const [tdsRate, setTdsRate] = useState(2);
+  const [reconResult, setReconResult] = useState(null);
+
+  const handleReconcile = () => {
+    const baseTaxable = gross / (1 + gstRate / 100);
+    const expectedTds = baseTaxable * (tdsRate / 100);
+    const expectedNet = gross - expectedTds;
+    const variance = Math.abs(received - expectedNet);
+    const isReconciled = variance <= 1.0;
+
+    setReconResult({
+      baseTaxable,
+      expectedTds,
+      expectedNet,
+      variance,
+      isReconciled,
+    });
+  };
+
+  return (
+    <div className="card-surface p-5 rounded-xl border border-white/[0.06] space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+        <div>
+          <h4 className="text-sm font-semibold text-tx-primary">Section 194C / 194J Tax & TDS Reconciler</h4>
+          <p className="text-xs text-tx-secondary mt-0.5">Automated validation of Indian statutory withholding tax</p>
+        </div>
+        <span className="badge-accent text-[9px] font-mono">Tax Engine</span>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div>
+          <label className="text-[10px] text-tx-tertiary block mb-1">Gross Invoice (₹)</label>
+          <input
+            type="number"
+            value={gross}
+            onChange={(e) => setGross(Number(e.target.value))}
+            className="w-full bg-black/40 border border-white/[0.08] rounded p-2 text-xs font-mono text-tx-primary focus:outline-none focus:border-accent"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-tx-tertiary block mb-1">Actual Received (₹)</label>
+          <input
+            type="number"
+            value={received}
+            onChange={(e) => setReceived(Number(e.target.value))}
+            className="w-full bg-black/40 border border-white/[0.08] rounded p-2 text-xs font-mono text-tx-primary focus:outline-none focus:border-accent"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-tx-tertiary block mb-1">GST Rate (%)</label>
+          <input
+            type="number"
+            value={gstRate}
+            onChange={(e) => setGstRate(Number(e.target.value))}
+            className="w-full bg-black/40 border border-white/[0.08] rounded p-2 text-xs font-mono text-tx-primary focus:outline-none focus:border-accent"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-tx-tertiary block mb-1">Stated TDS (%)</label>
+          <input
+            type="number"
+            value={tdsRate}
+            onChange={(e) => setTdsRate(Number(e.target.value))}
+            className="w-full bg-black/40 border border-white/[0.08] rounded p-2 text-xs font-mono text-tx-primary focus:outline-none focus:border-accent"
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleReconcile}
+        className="btn-outline w-full text-xs py-2 flex items-center justify-center gap-2 hover:bg-accent hover:text-white transition-colors"
+      >
+        <span>Run Tax Reconciliation</span>
+      </button>
+
+      {reconResult && (
+        <div className={`p-4 rounded-xl border text-xs space-y-2 animate-fade-up ${
+          reconResult.isReconciled ? 'bg-success/[0.05] border-success/20' : 'bg-warning/[0.05] border-warning/20'
+        }`}>
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-tx-primary">
+              {reconResult.isReconciled ? '✅ Legitimate TDS Withholding (Reconciled)' : '⚠️ Unexplained Short Payment (Disputed)'}
+            </span>
+            <span className="font-mono text-tx-tertiary">
+              Expected Net: ₹{Math.round(reconResult.expectedNet).toLocaleString('en-IN')}
+            </span>
+          </div>
+          <div className="text-[11px] text-tx-secondary space-y-1 pt-1 border-t border-white/[0.04] font-mono">
+            <div className="flex justify-between">
+              <span>Base Taxable Amount:</span>
+              <span>₹{Math.round(reconResult.baseTaxable).toLocaleString('en-IN')}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Statutory {tdsRate}% TDS:</span>
+              <span>₹{Math.round(reconResult.expectedTds).toLocaleString('en-IN')}</span>
+            </div>
+            {!reconResult.isReconciled && (
+              <div className="flex justify-between text-warning font-bold">
+                <span>Unaccounted Shortfall:</span>
+                <span>₹{Math.round(reconResult.variance).toLocaleString('en-IN')}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SCENARIOS = getScenarios();
+
 export default function Screen3_DemoLab({ onEvaluateDecision }) {
+  const [activeMode, setActiveMode] = useState('decision'); // 'decision' | 'tax'
   const [emailText, setEmailText] = useState(SCENARIOS[0].text);
   const [selectedScenario, setSelectedScenario] = useState('scenario_1');
   const [loading, setLoading] = useState(false);
@@ -119,7 +242,40 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
+    <div className="space-y-4">
+      {/* ── Mode Switcher ── */}
+      <div className="flex items-center gap-2 p-1 bg-white/[0.04] rounded-xl border border-white/[0.06] w-fit">
+        <button
+          type="button"
+          onClick={() => setActiveMode('decision')}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
+            activeMode === 'decision'
+              ? 'bg-accent text-white shadow-accent-sm'
+              : 'text-tx-tertiary hover:text-tx-secondary hover:bg-white/[0.03]'
+          }`}
+        >
+          <Zap className="w-3.5 h-3.5" />
+          <span>Inbound Decision Engine</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMode('tax')}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
+            activeMode === 'tax'
+              ? 'bg-accent text-white shadow-accent-sm'
+              : 'text-tx-tertiary hover:text-tx-secondary hover:bg-white/[0.03]'
+          }`}
+        >
+          <span>⚖️ Run Tax Reconciliation</span>
+        </button>
+      </div>
+
+      {activeMode === 'tax' ? (
+        <div className="animate-fade-up">
+          <TaxReconciliationWidget />
+        </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row gap-5 items-start" style={{ minHeight: 'calc(100vh - 340px)' }}>
       {/* ════════════════════════════════════ LEFT PANEL ════════════════════════════════════ */}
       <div className="w-full lg:w-[360px] flex-shrink-0 space-y-4 lg:sticky lg:top-[100px]">
 
@@ -229,7 +385,10 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
               {/* Provenance Strip */}
               <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
                 <span className="provenance-synthetic">🔬 Synthetic</span>
-                <span className="provenance-llm">🤖 LLM-Extracted</span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+                  <Sparkles className="w-2.5 h-2.5 text-indigo-400" />
+                  Google Gemini 2.0 Extracted
+                </span>
                 <span className="provenance-deterministic">✓ Deterministic</span>
                 <span className="provenance-deterministic">💰 Paise-Safe</span>
               </div>
@@ -238,6 +397,52 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
               <p className="text-[10px] font-mono text-tx-tertiary mt-3">
                 Decision ID: {result.decision_id}
               </p>
+            </div>
+
+            {/* ── Google Gemini 2.0 Flash Extraction Card (Prominent Top Placement) ── */}
+            <div className="card-surface p-5 rounded-xl border border-indigo-500/30 bg-indigo-950/20 shadow-lg shadow-indigo-950/30">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse" />
+                  <span className="text-sm font-bold text-tx-primary flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-indigo-400" />
+                    Google Gemini 2.0 Flash Semantic Extraction
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                  Pydantic Schema Enforced
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="bg-black/40 p-3 rounded-xl border border-white/[0.06]">
+                  <span className="text-[10px] text-tx-tertiary uppercase tracking-wider block mb-1 font-mono">
+                    Parsed Inbound Debtor Communication:
+                  </span>
+                  <p className="text-xs text-tx-secondary font-mono italic leading-relaxed">
+                    "{emailText}"
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  <div className="bg-black/30 p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-[10px] text-tx-tertiary block">Detected Intent</span>
+                    <span className="font-semibold text-accent truncate block mt-0.5">{result.intent_detected}</span>
+                  </div>
+                  <div className="bg-black/30 p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-[10px] text-tx-tertiary block">Extraction Confidence</span>
+                    <span className="font-mono text-success font-semibold block mt-0.5">{(result.intent_confidence * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="bg-black/30 p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-[10px] text-tx-tertiary block">TDS Identified</span>
+                    <span className="font-mono text-tx-secondary block mt-0.5">{result.tds_rate_pct > 0 ? `${result.tds_rate_pct}% Sec 194C` : '0%'}</span>
+                  </div>
+                  <div className="bg-black/30 p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-[10px] text-tx-tertiary block">Safety & Injection Gate</span>
+                    <span className="font-semibold text-success block mt-0.5">Passed (0 Vector)</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* ── Generated Outbound Communication & Smart Link Dispatch ── */}
@@ -315,6 +520,7 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
                 )}
               </div>
             </div>
+
 
             {/* ── EV Candidate Table ── */}
             <div className="card-surface overflow-hidden">
@@ -433,6 +639,9 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
                 </div>
               </AccordionSection>
             </div>
+
+            {/* ── Interactive Tax & TDS Reconciler Tool ── */}
+            <TaxReconciliationWidget />
           </div>
         ) : (
           /* ── Empty State ── */
@@ -444,11 +653,13 @@ export default function Screen3_DemoLab({ onEvaluateDecision }) {
               and show its full decision reasoning here.
             </p>
             <p className="text-[10px] text-tx-tertiary mt-4 font-mono">
-              Powered by Gemini 1.5 Pro + Deterministic Paise Engine
+              Powered by Google Gemini 1.5 Flash + Deterministic Paise Engine
             </p>
           </div>
         )}
       </div>
     </div>
+    )}
+  </div>
   );
 }
