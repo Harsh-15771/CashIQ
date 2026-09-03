@@ -136,3 +136,30 @@ I didn't get the defenses right on the first try. I tested the pipeline against 
 1. **Iteration 1 (Basic Prompting):** Blocked only **1 / 6 attacks (16.7%)**. Prompt injections easily tricked the LLM into resetting invoice balances to 0.
 2. **Iteration 2 (Strict Pydantic Validation):** Blocked **3 / 6 attacks (50.0%)**. Structural types prevented balance overwrites, but semantic date tricks (e.g. "We will pay on Feb 30") still slipped through.
 3. **Iteration 3 (Ambiguity Gate + ISO Regex + Policy Gate - Current):** Blocked **6 / 6 attacks (100%)** by validating dates with regex, keeping parsing strictly separated from execution, and routing unverified claims to the human Action Queue.
+
+---
+
+### Q12: Why does Contractual Due show ₹81L while CashIQ Expected Inflows shows ₹57L? Does this mean CashIQ is underperforming?
+
+**Answer:**  
+**Absolutely not — in fact, the opposite is true.**
+
+* **Contractual Due (₹81L):** Represents the naive accounting sum of all open invoice due dates. It dangerously assumes that 100% of enterprise debtors pay on the exact day agreed upon, with zero bank delays, zero TDS withholdings, and zero disputes. Relying on Contractual Due is why enterprises experience sudden cash crunches and payroll shortfalls.
+* **CashIQ Expected Inflows (₹57L):** Represents the **mathematically calibrated, real-world cash forecast**. CashIQ discounts for chronic delayers (using historical Days Beyond Terms), accounts for verified statutory 2% TDS under Section 194C, and isolates unverified UTR claims.
+* **The ₹24L difference is not lost cash; it is protected clarity.** By showing the finance team exactly which ₹24L is at risk or delayed, CashIQ enables proactive liquidity management rather than blind month-end surprises.
+
+---
+
+### Q13: What happens when you switch between Credit Operations Lead and Finance Controller / CFO?
+
+**Answer:**  
+The role switcher demonstrates **Segregation of Duties (SoD Level 2)** and enterprise dual-control governance:
+
+1. **Credit Operations Lead (`ops`):**
+   * Can approve, pause, or snooze standard daily operational actions on invoices under ₹2.5L.
+   * High-value invoices ($\ge$ ₹2,50,000) are **policy-locked** (`Locked (CFO)`). An operations analyst cannot unilaterally authorize large settlement deductions or pause dunning on major accounts.
+2. **Finance Controller / CFO (`cfo`):**
+   * Unlocks executive financial authority (`👑 Authorize`).
+   * Can sign off on high-value exposures ($\ge$ ₹2.5L) as well as standard invoices, maintaining full executive oversight.
+3. **Audit Trail Transparency:**
+   * Every decision is recorded with approver attribution (`approved_by: "cfo_controller"` vs `"credit_ops_lead"`) and rendered in plain, human-readable English in the Guardrail Audit Log.

@@ -17,7 +17,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/Gemini-1.5_Flash-4285F4?logo=google&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/Gemini-2.0_Flash-4285F4?logo=google&logoColor=white" alt="Gemini" />
   <img src="https://img.shields.io/badge/LightGBM-Classifier-02569B?logo=lightgbm&logoColor=white" alt="LightGBM" />
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Tests-50%2F50_Passing-22C55E?logo=pytest&logoColor=white" alt="Tests" />
@@ -68,6 +68,7 @@ Generic dunning tools send blind reminders every 4 days. They annoy enterprise c
 5. A **Trained LightGBM Classifier** predicts calibrated recovery probability with local TreeSHAP feature attributions — the operator sees *why* the AI scored a debtor, not just the number
 6. An **Integer Paise EV Optimizer** evaluates every candidate action (including `NO_ACTION`) against a superlinear customer fatigue model — ensuring the system never recommends destroying a relationship for marginal recovery
 7. A **Deterministic Policy Gate** vetoes any action that violates business rules — price-lock freezes, high-value approval thresholds (>₹2.5L), and cooldown enforcement
+8. A **Dual-Role RBAC with Segregation of Duties (SoD Level 2)** enforces dual control — Credit Operations can approve operational actions (< ₹2.5L), while high-value exposures (≥ ₹2.5L) require Finance Controller / CFO authorization, backed by a human-readable guardrail audit log.
 
 > **Key Principle:** The AI *proposes and reasons*. Deterministic backend services *authorize and execute*. The EV optimizer always evaluates `NO_ACTION` as a first-class candidate with EV = 0 — organic recovery is never claimed as AI value.
 
