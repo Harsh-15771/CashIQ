@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://cash-iq-eta.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-cash--iq--eta.vercel.app-22C55E?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
-  <a href="https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8"><img src="https://img.shields.io/badge/Pitch_Video-5--Min_Demo_Walkthrough-FF5A5F?style=for-the-badge&logo=loom&logoColor=white" alt="Pitch Video" /></a>
-  <a href="https://cashiq-cf8t.onrender.com/docs"><img src="https://img.shields.io/badge/API_Docs-FastAPI_Swagger-6366F1?style=for-the-badge&logo=fastapi&logoColor=white" alt="API Docs" /></a>
-  <a href="https://github.com/Harsh-15771/CashIQ"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" /></a>
+  <a href="https://cash-iq-eta.vercel.app/"><strong>🌐 Live Demo</strong></a> &nbsp;•&nbsp;
+  <a href="https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8"><strong>📺 Pitch Video</strong></a> &nbsp;•&nbsp;
+  <a href="https://cashiq-cf8t.onrender.com/docs"><strong>📖 API Docs</strong></a> &nbsp;•&nbsp;
+  <a href="https://github.com/Harsh-15771/CashIQ"><strong>💻 GitHub Repo</strong></a>
 </p>
 
 <p align="center">
@@ -22,16 +22,21 @@
   <img src="https://img.shields.io/badge/LightGBM-Classifier-02569B?logo=lightgbm&logoColor=white" alt="LightGBM" />
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Tests-50%2F50_Passing-22C55E?logo=pytest&logoColor=white" alt="Tests" />
-  <img src="https://img.shields.io/badge/License-Proprietary-6366F1" alt="Proprietary License" />
 </p>
 
 <p align="center">
   An intelligent receivables platform that decomposes enterprise B2B outstanding balances into six actionable working capital buckets, predicts debtor payment likelihood using a trained LightGBM classifier with TreeSHAP explainability, and optimizes next-best-action through an integer paise Expected Value engine — all governed by deterministic policy gates that ensure the AI <em>proposes</em> while the business <em>decides</em>.
 </p>
 
-> 📺 **5-Minute Pitch Video Walkthrough:** [https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8](https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8)  
-> 🌐 **Live Web Application:** [https://cash-iq-eta.vercel.app/](https://cash-iq-eta.vercel.app/)  
-> 📖 **Interactive API Documentation:** [https://cashiq-cf8t.onrender.com/docs](https://cashiq-cf8t.onrender.com/docs)
+<div align="center">
+
+### 📺 5-Minute Pitch Video Walkthrough
+
+https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8
+
+*(Recorded live for the Razorpay AI Buildathon · Full 1080p with chapter bookmarks)*
+
+</div>
 
 ---
 
