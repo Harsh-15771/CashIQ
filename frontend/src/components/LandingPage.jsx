@@ -7,7 +7,7 @@ const benefits = [
   ['Forecast with real payment signals', 'See the difference between contractual dates and likely cash arrival.'],
 ];
 
-export default function LandingPage({ onEnterApp }) {
+export default function LandingPage({ onEnterApp, onOpenExecutiveModal }) {
   return <div className="min-h-screen bg-canvas text-tx-primary overflow-hidden">
     <header className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
       <button type="button" onClick={onEnterApp} className="flex items-center gap-3 text-left"><span className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-[#8b5cf6] flex items-center justify-center shadow-accent-sm"><TrendingUp className="w-5 h-5 text-white" /></span><span><span className="block font-bold tracking-tight text-lg">Cash<span className="text-accent-hover">IQ</span></span><span className="block text-[9px] font-semibold text-tx-tertiary uppercase tracking-[0.15em]">Receivables OS</span></span></button>
@@ -20,7 +20,7 @@ export default function LandingPage({ onEnterApp }) {
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-accent/30 bg-accent/[0.1] text-[11px] font-semibold text-accent-hover"><Sparkles className="w-3.5 h-3.5" />Built for faster, safer cash collection</div>
         <h1 className="mt-6 text-4xl sm:text-6xl lg:text-7xl font-bold tracking-[-0.05em] leading-[1.02]">Turn receivables into<br className="hidden sm:block" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a5b4fc] to-[#c4b5fd]">predictable cash.</span></h1>
         <p className="max-w-2xl mx-auto mt-6 text-base sm:text-lg leading-relaxed text-tx-secondary">CashIQ helps finance teams spot risk, approve the right next action, and confidently forecast when money will land.</p>
-        <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3"><button type="button" onClick={onEnterApp} className="btn-primary text-sm flex items-center justify-center gap-2">Explore the live workspace <ArrowRight className="w-4 h-4" /></button><button type="button" onClick={onEnterApp} className="btn-outline text-sm flex items-center justify-center gap-2"><CirclePlay className="w-4 h-4" />See how it works</button></div>
+        <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3"><button type="button" onClick={onEnterApp} className="btn-primary text-sm flex items-center justify-center gap-2">Explore the live workspace <ArrowRight className="w-4 h-4" /></button><button type="button" onClick={onOpenExecutiveModal || onEnterApp} className="btn-outline text-sm flex items-center justify-center gap-2"><CirclePlay className="w-4 h-4" />See how it works</button></div>
         <p className="mt-4 text-[11px] text-tx-tertiary">No setup required — open the Buildathon demo workspace.</p>
       </section>
 

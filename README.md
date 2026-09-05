@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://cash-iq-eta.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-cash--iq--eta.vercel.app-22C55E?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8"><img src="https://img.shields.io/badge/Pitch_Video-5--Min_Demo_Walkthrough-FF5A5F?style=for-the-badge&logo=loom&logoColor=white" alt="Pitch Video" /></a>
   <a href="https://cashiq-cf8t.onrender.com/docs"><img src="https://img.shields.io/badge/API_Docs-FastAPI_Swagger-6366F1?style=for-the-badge&logo=fastapi&logoColor=white" alt="API Docs" /></a>
   <a href="https://github.com/Harsh-15771/CashIQ"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" /></a>
 </p>
@@ -28,6 +29,7 @@
   An intelligent receivables platform that decomposes enterprise B2B outstanding balances into six actionable working capital buckets, predicts debtor payment likelihood using a trained LightGBM classifier with TreeSHAP explainability, and optimizes next-best-action through an integer paise Expected Value engine — all governed by deterministic policy gates that ensure the AI <em>proposes</em> while the business <em>decides</em>.
 </p>
 
+> 📺 **5-Minute Pitch Video Walkthrough:** [https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8](https://www.loom.com/share/fb789e8f664c458e8ed951799156d6c8)  
 > 🌐 **Live Web Application:** [https://cash-iq-eta.vercel.app/](https://cash-iq-eta.vercel.app/)  
 > 📖 **Interactive API Documentation:** [https://cashiq-cf8t.onrender.com/docs](https://cashiq-cf8t.onrender.com/docs)
 

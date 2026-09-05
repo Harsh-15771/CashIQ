@@ -149,7 +149,22 @@ function AppInner() {
   }, []);
 
   if (activeTab === 'welcome') {
-    return <LandingPage onEnterApp={() => navigateToTab('home')} />;
+    return (
+      <>
+        <LandingPage
+          onEnterApp={() => navigateToTab('home')}
+          onOpenExecutiveModal={() => setIsExecutiveModalOpen(true)}
+        />
+        <ExecutiveSummaryModal
+          isOpen={isExecutiveModalOpen}
+          onClose={() => setIsExecutiveModalOpen(false)}
+          stats={stats}
+          forecastData={forecastData}
+          onLaunchDemo={() => navigateToTab('demolab')}
+          onNavigate={navigateToTab}
+        />
+      </>
+    );
   }
 
   return (
